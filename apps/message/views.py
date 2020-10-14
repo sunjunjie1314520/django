@@ -10,7 +10,7 @@ from django.forms.models import model_to_dict
 from utils.Response import BasicView, SuccessResponse, ErrorResponse, serializerErrorResponse
 from utils.Sms import SEND_SMS
 from utils.Time import get_timestamp
-from utils.Random import get_nonceStr
+from utils.Random import get_noncestr
 from utils.Sign import sha1
 
 from .serializer import SendSerializer, SmsSerializer
@@ -54,6 +54,7 @@ class SmsView(APIView):
         result = SEND_SMS(phone, debug=False)
 
         conn.set(result['phone'], result['code'], ex=5*60)
+        
         stamp = get_timestamp()
         conn.set('stamp_{phone}'.format(phone=result['phone']), stamp, ex=expired)
 
@@ -88,7 +89,7 @@ class SignatureView(APIView):
 
         url = request.data.get('url')
         timestamp = get_timestamp()
-        noncestr = get_nonceStr()
+        noncestr = get_noncestr()
 
         data = {
             "debug": False,
@@ -98,10 +99,10 @@ class SignatureView(APIView):
             "signature": '', # 必填，签名
             "jsApiList": ['updateAppMessageShareData', 'updateTimelineShareData'], # 必填，需要使用的JS接口列表
             "share":{
+                "link": url,
                 "title": '7许未来',
                 'desc': '国寿安保基金7周年献礼',
-                "link": url,
-                "imgUrl": 'http://www.okami.net.cn:8001/game5/img/logo.jpg'
+                "imgUrl": 'http://www.hzasdbf.cn/seven/img/logo.jpg'
             }
         } 
 

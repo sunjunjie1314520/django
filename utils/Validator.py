@@ -7,7 +7,7 @@ def phone_validator(value):
     """
     reg = r"^(1[3|4|5|6|7|8|9])\d{9}$"
     if not re.match(reg, value):
-        raise ValidationError('请正确填写1l位手机号码')
+        raise ValidationError('请正确填写11位手机号码')
 
 def name_validator(value):
     """

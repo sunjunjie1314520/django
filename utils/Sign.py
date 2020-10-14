@@ -1,4 +1,3 @@
-
 import hashlib
 
 def sha1(res:str):
@@ -8,3 +7,5 @@ def sha1(res:str):
     sha = hashlib.sha1(res.encode('utf-8'))
     encrypts = sha.hexdigest()
     return encrypts
+
+

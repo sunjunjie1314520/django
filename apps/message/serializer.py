@@ -21,7 +21,7 @@ class SendSerializer(serializers.ModelSerializer):
         'max_length': '姓名不能多于10个',
     })
     phone = serializers.CharField(label="手机号", validators=[phone_validator, ], error_messages={
-        'blank': "手机号不能为空",
+        'blank': "手机号码不能为空",
     })
     textarea = serializers.CharField(label="留言内容", min_length=2, error_messages={
         'min_length': '留言内容不能少于2个字',

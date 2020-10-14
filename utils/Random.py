@@ -1,7 +1,6 @@
 from random import choice
-import time
 
-def get_nonceStr(length = 32):
+def get_noncestr(length = 32):
         """
         生成32位随机字符串
         :return:
@@ -24,5 +23,5 @@ def generate_trade_no(length = 28):
         return ''.join(random_str)
 
 if __name__ == "__main__":
-    a = generate_nonce()
-    print(a)
+    _str = generate_trade_no()
+    print(_str)

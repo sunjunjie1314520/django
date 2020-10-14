@@ -47,8 +47,9 @@ def SEND_SMS(phone, debug=False):
         res = requests.get(url, params=data)
         if res.status_code == 200:
             if res.json()['code'] == 'SUCCESS':
-                return {'phone': phone, 'code': random_code}
-    return {'phone': phone, 'code': random_code}
+                return {'phone': phone, 'code': random_code, 'success': True}
+    return {'phone': phone, 'code': random_code, 'success': False}
 
 if __name__ == "__main__":
-    SEND_SMS('19871455054')
+    res = SEND_SMS('19871455054, 18827183521')
+    print(res)
