@@ -1,34 +1,28 @@
-from django.shortcuts import render
-
-from django.http import JsonResponse
+import requests
 
 from rest_framework.views import APIView
-from rest_framework import serializers
 from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.exceptions import ValidationError
 
+from django.http import JsonResponse
 from django_redis import get_redis_connection
-
-from utils.Response import BasicView, SuccessResponse, ErrorResponse, serializerErrorResponse
-from utils.Validator import phone_validator
-from utils.Sms import SEND_SMS
-from utils.Time import getTimestamp, formatDate
 from django.forms.models import model_to_dict
 
+from utils.Response import BasicView, SuccessResponse, ErrorResponse, serializerErrorResponse
+from utils.Sms import SEND_SMS
+from utils.Time import get_timestamp
+from utils.Random import get_nonceStr
+from utils.Sign import sha1
+
+from .serializer import SendSerializer, SmsSerializer
 from . import models
 
-########## message module
-def Index(request):
-    return Response({'postion': 'message api home'})
 
+########## message module
+class IndexView(APIView):
+    def get(self, request, *args, **kwargs):
+        return Response({'postion': 'message api home'}, status=200)
 
 ################### 发送验证码 #####################
-
-class SmsSerializer(serializers.Serializer):
-    phone = serializers.CharField(label="手机号", validators=[phone_validator,], error_messages={
-        'blank': "手机号不能为空",
-    })
 
 class SmsView(APIView):
 
@@ -52,15 +46,15 @@ class SmsView(APIView):
         expired = 60
 
         if stamp:
-            a = getTimestamp()
+            a = get_timestamp()
             b = int(stamp.decode('utf-8'))
             c = expired - (a - b)
-            return ErrorResponse(code=2, msg='过于频繁,请稍候再试({0}s)!'.format(c))
+            return ErrorResponse(code=2, msg='请稍候再试({0}s)!'.format(c))
 
         result = SEND_SMS(phone, debug=False)
 
         conn.set(result['phone'], result['code'], ex=5*60)
-        stamp = getTimestamp()
+        stamp = get_timestamp()
         conn.set('stamp_{phone}'.format(phone=result['phone']), stamp, ex=expired)
 
         print(result)
@@ -68,55 +62,6 @@ class SmsView(APIView):
         return SuccessResponse(msg='发送成功')
 
 ################### 表单提交 #####################
-class SendSerializer(serializers.ModelSerializer):
-    
-    name = serializers.CharField(label="姓名", min_length=2, max_length=10, error_messages={
-        'required': "姓名为必填项",
-        'blank': "姓名不能为空",
-        'min_length': '姓名不能小于2个',
-        'max_length': '姓名不能大于10个',
-    })
-
-    phone = serializers.CharField(label="手机号", validators=[phone_validator, ], error_messages={
-        'blank': "手机号不能为空",
-    })
-
-    textarea = serializers.CharField(label="留言内容", min_length=2, error_messages={
-        'min_length': '留言内容不能少于2个字',
-    })
-
-    code = serializers.CharField(label="验证码", min_length=6, max_length=6, error_messages={
-        'blank': '验证码不能为空',
-        'min_length': '验证码不能小于6',
-        'max_length': '验证码不能大于6',
-    })
-
-    create_time = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
-
-    def validate_code(self, value):
-
-        if not value.isdecimal():
-            raise ValidationError('验证码只能为数字')
-
-        phone = self.initial_data.get('phone')
-        conn = get_redis_connection()
-        code = conn.get(phone)
-        
-        if not code:
-            raise ValidationError('验证码不存在')
-        
-        if value != code.decode('utf-8'):
-            raise ValidationError('验证码错误')
-        
-        return value
-
-    def validate(self, attrs):
-        del attrs['code']
-        return attrs
-
-    class Meta:
-        model = models.Message
-        fields = '__all__'
 
 class SendView(APIView):
     serializer_class = SendSerializer
@@ -135,3 +80,77 @@ class SendView(APIView):
             res.create_time = res.create_time.strftime('%Y-%m-%d %H:%M:%S')
             return SuccessResponse(data=model_to_dict(res), msg='保存成功')
         return ErrorResponse(code=2, msg='不能重复提交')
+
+################### 公众号签名 #####################
+
+class SignatureView(APIView):
+    def post(self, request, *args, **kwargs):
+
+        url = request.data.get('url')
+        timestamp = get_timestamp()
+        noncestr = get_nonceStr()
+
+        data = {
+            "debug": False,
+            "appId": 'wxa4d1e1b8e398da74', # 必填，公众号的唯一标识
+            "timestamp": timestamp, # 必填，生成签名的时间戳
+            "nonceStr": noncestr, # 必填，生成签名的随机串
+            "signature": '', # 必填，签名
+            "jsApiList": ['updateAppMessageShareData', 'updateTimelineShareData'], # 必填，需要使用的JS接口列表
+            "share":{
+                "title": '7许未来',
+                'desc': '国寿安保基金7周年献礼',
+                "link": url,
+                "imgUrl": 'http://www.okami.net.cn:8001/game5/img/logo.jpg'
+            }
+        } 
+
+        conn = get_redis_connection()
+        token = conn.get('access_token')
+
+        if not token:
+            params = {
+                "grant_type":'client_credential',
+                "appid":'wxa4d1e1b8e398da74',
+                "secret":'2d40727f812daccfa6649b69fd79ba3c',
+            }
+            r = requests.get('https://api.weixin.qq.com/cgi-bin/token', params=params)
+            if r.status_code != 200:
+                return ErrorResponse(msg='获取access_token失败')
+            token = r.json().get('access_token')
+            conn.set('access_token', token, ex=2*60*60)
+            token = conn.get('access_token')
+        
+        access_token = token.decode('utf-8')
+
+        # print(access_token)
+
+        ticket = conn.get('ticket')
+
+        if not ticket:
+            params = {
+                "access_token":access_token,
+                "type":'jsapi'
+            }
+            q = requests.get('https://api.weixin.qq.com/cgi-bin/ticket/getticket', params=params)
+            if q.status_code != 200:
+                return ErrorResponse(msg='获取jsapi_ticket失败')
+            print(q.json())
+            ticket = q.json().get('ticket')
+            conn.set('ticket', ticket, ex=2*60*60)
+            ticket = conn.get('ticket')
+        
+        jsapi_ticket = ticket.decode('utf-8')
+
+        sign_data = {
+            "url": url,
+            "timestamp": timestamp,
+            "noncestr": noncestr,
+            "jsapi_ticket": jsapi_ticket
+        }
+
+        temp = '&'.join(["{0}={1}".format(k, sign_data[k]) for k in sorted(sign_data)])
+        
+        data['signature'] = sha1(temp)
+
+        return SuccessResponse(data=data, msg='获取成功')

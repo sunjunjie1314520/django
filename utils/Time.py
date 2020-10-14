@@ -2,7 +2,7 @@
 from datetime import datetime
 import time
 
-def getTimestamp():
+def get_timestamp():
     # 1499825149.257892    #原始时间数据
     # 1499825149           #秒级时间戳，10位
     # 1499825149257        #毫秒级时间戳，13位
@@ -17,3 +17,7 @@ def getTimestamp():
 def formatDate(date):
     print(date)
     return datetime.strptime(date, '%Y-%m-%d %H:%M:%S')
+
+if __name__ == "__main__":
+    a = get_timestamp()
+    print(a)

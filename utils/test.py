@@ -7,9 +7,9 @@ print(conn.keys())
 
 # conn.set('15971345754', '415648', ex=300)
 
-# conn.flushall()
+conn.flushall()
 
-result = conn.get('15971345754')
+result = conn.get('access_token')
 
 print(result)
 
