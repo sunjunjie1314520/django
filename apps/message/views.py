@@ -54,7 +54,7 @@ class SmsView(APIView):
         result = SEND_SMS(phone, debug=False)
 
         conn.set(result['phone'], result['code'], ex=5*60)
-        
+
         stamp = get_timestamp()
         conn.set('stamp_{phone}'.format(phone=result['phone']), stamp, ex=expired)
 
@@ -102,7 +102,7 @@ class SignatureView(APIView):
                 "link": url,
                 "title": '7许未来',
                 'desc': '国寿安保基金7周年献礼',
-                "imgUrl": 'http://www.hzasdbf.cn/seven/img/logo.jpg'
+                "imgUrl": '{url}img/logo.jpg'.format(url=url[0: url.rfind('/') + 1])
             }
         } 
 
