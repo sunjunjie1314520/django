@@ -1,0 +1,1 @@
+celery -A demo worker -l INFO -P eventlet

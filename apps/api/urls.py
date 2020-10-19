@@ -6,12 +6,13 @@ from .models import Person
 
 def Index(request):
     return JsonResponse({
-        'position': 'API首页',
+        'position': 'API MODULE',
     })
 
 urlpatterns = [
     path('', Index),
-    path('users/', include('users.urls')),
-    path('operation/', include('operation.urls')),
-    path('message/', include('message.urls')),
+    path('/users/', include('users.urls')),
+    path('/operation/', include('operation.urls')),
+    path('/message', include('message.urls')),
+    path('/barber', include('barber.urls')),
 ]

@@ -50,7 +50,8 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'operation.apps.OperationConfig',
     'order.apps.OrderConfig',
-    'message.apps.MessageConfig'
+    'message.apps.MessageConfig',
+    'barber.apps.BarberConfig',
 ]
 
 MIDDLEWARE = [
@@ -131,14 +132,17 @@ USE_L10N = True
 
 USE_TZ = False
 
+APPEND_SLASH=False
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+# python manage.py collectstatic 收集所有静态文件
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/assist')
 
 MEDIA_URL = '/media/'
-
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/assist') # 默认根目录
 
 REST_FRAMEWORK = {
     # 'DEFAULT_PERMISSION_CLASSES': [
@@ -161,15 +165,16 @@ CACHES = {
     }
 }
 
+
+# django-celery 配置
 CELERY_BROKER_URL = 'redis://47.98.213.63:6379' # Broker配置，使用Redis作为消息中间件
-
 CELERY_ACCEPT_CONTENT = ['json']
-
 CELERY_RESULT_BACKEND = 'redis://47.98.213.63:6379' # BACKEND配置，这里使用redis
+CELERY_TASK_SERIALIZER = 'json' # 结果序列化方案
+CELERY_TIME_ZONE = 'Asia/Shanghai'
+CELERY_ENABLE_UTC = True
+CELERY_TASK_TIME_LIMIT = 10
 
-CELERY_RESULT_SERIALIZER = 'json' # 结果序列化方案
-
-
+# 跨域配置
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_ALLOW_ALL = True
-

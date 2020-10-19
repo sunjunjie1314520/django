@@ -6,7 +6,8 @@ admin.AdminSite.site_title = '留言管理系统V1.0.0'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('api.urls')),
+    path('api', include('api.urls')),
 
-    re_path(r'^api-auth/', include('rest_framework.urls'))
+    re_path(r'^api-auth/', include('rest_framework.urls')),
+    # re_path(r'^static/(?P<path>.*)$', serve, {'document_root': STATIC_ROOT}),
 ]

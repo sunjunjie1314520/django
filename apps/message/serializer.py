@@ -48,6 +48,8 @@ class SendSerializer(serializers.ModelSerializer):
         if value != code.decode('utf-8'):
             raise ValidationError('验证码错误')
         
+        conn.delete('stamp_{phone}'.format(phone=phone))
+        
         return value
 
     def validate(self, attrs):

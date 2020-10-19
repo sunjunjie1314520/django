@@ -9,18 +9,23 @@ from django.forms.models import model_to_dict
 
 from utils.Response import BasicView, SuccessResponse, ErrorResponse, serializerErrorResponse
 from utils.Sms import SEND_SMS
-from utils.Time import get_timestamp
+from utils.Time import get_timestamp, NowTimeToUTC
 from utils.Random import get_noncestr
 from utils.Sign import sha1
 
 from .serializer import SendSerializer, SmsSerializer
 from . import models
-
+from . import tasks
 
 ########## message module
 class IndexView(APIView):
     def get(self, request, *args, **kwargs):
-        return Response({'postion': 'message api home'}, status=200)
+        # 即时任务
+        nid = tasks.add.delay(1, 2)
+        # 定时任务
+        task = tasks.jian.apply_async(args=[10, 5], eta=NowTimeToUTC(seconds=10))
+
+        return Response({'位置': 'message module', '即时任务ID': nid.id, '定时任务ID': task.id}, status=200)
 
 ################### 发送验证码 #####################
 
@@ -42,7 +47,6 @@ class SmsView(APIView):
         stamp = conn.get('stamp_{phone}'.format(phone=phone))
 
         # 过期时间(秒)
-
         expired = 60
 
         if stamp:
@@ -51,14 +55,14 @@ class SmsView(APIView):
             c = expired - (a - b)
             return ErrorResponse(code=2, msg='请稍候再试({0}s)!'.format(c))
 
-        result = SEND_SMS(phone, debug=False)
+        result = SEND_SMS(phone, debug=True)
 
         conn.set(result['phone'], result['code'], ex=5*60)
 
         stamp = get_timestamp()
         conn.set('stamp_{phone}'.format(phone=result['phone']), stamp, ex=expired)
 
-        print(result)
+        print("\033[1;31;40m{text}\033[0m".format(text=result))
 
         return SuccessResponse(msg='发送成功')
 
@@ -78,7 +82,7 @@ class SendView(APIView):
         result = models.Message.objects.filter(phone=phone).exists()
         if not result:
             res = serializer.save()
-            res.create_time = res.create_time.strftime('%Y-%m-%d %H:%M:%S')
+            res.create_time = res.create_time.strftime('%Y-%m-%d %H:%M:%S')            
             return SuccessResponse(data=model_to_dict(res), msg='保存成功')
         return ErrorResponse(code=2, msg='不能重复提交')
 
