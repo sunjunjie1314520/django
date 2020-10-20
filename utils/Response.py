@@ -17,7 +17,7 @@ def error(code=1, msg=None):
     }
     return data
 
-def serializerErrorResponse(serializer):
+def SerializerErrorResponse(serializer):
     errors = []
     json_data = serializer.errors
     for i, val in enumerate(json_data):

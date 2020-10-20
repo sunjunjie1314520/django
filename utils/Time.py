@@ -1,5 +1,5 @@
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 import time
 
 def get_timestamp():
@@ -41,6 +41,31 @@ def SetTimeToUTC(tss1):
     timeStamp = int(time.mktime(timeArray))
     return datetime.utcfromtimestamp(timeStamp)
 
+def get_ToDay_Type1(str_time=None):
+    """
+    获取今天的时间
+    """
+    curr_time = time.localtime()
+    if str_time:
+        curr_time = time.strptime(str_time, "%Y-%m-%d")
+    start = time.strftime("%Y-%m-%d 00:00:00", curr_time)
+    end = time.strftime("%Y-%m-%d 23:59:59", curr_time)
+    return [start, end]
+
+
+def get_ToDay_Type2(str_time=None):
+    """
+    获取今天的时间
+    """
+    de = time.strptime(str_time, "%Y-%m-%d")
+    y = de.tm_year
+    m = de.tm_mon
+    d = de.tm_mday
+    start = datetime(y,m,d)
+    end = start + timedelta(days=1)
+    print(start, end)
+    return [start.strftime('%Y-%m-%d'), end.strftime('%Y-%m-%d')]
+
 if __name__ == "__main__":
-    a = timeToUTC('2020-10-19 01:15:20')
+    a = get_ToDay_Type2('2020-09-20')
     print(a)

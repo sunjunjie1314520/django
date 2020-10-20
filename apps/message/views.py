@@ -7,7 +7,7 @@ from django.http import JsonResponse
 from django_redis import get_redis_connection
 from django.forms.models import model_to_dict
 
-from utils.Response import BasicView, SuccessResponse, ErrorResponse, serializerErrorResponse
+from utils.Response import BasicView, SuccessResponse, ErrorResponse, SerializerErrorResponse
 from utils.Sms import SEND_SMS
 from utils.Time import get_timestamp, NowTimeToUTC
 from utils.Random import get_noncestr
@@ -38,7 +38,7 @@ class SmsView(APIView):
         serializer = self.serializer_class(data=request.data)
 
         if not serializer.is_valid():
-            return serializerErrorResponse(serializer)
+            return SerializerErrorResponse(serializer)
 
         phone = serializer.validated_data.get('phone')
 
@@ -55,7 +55,7 @@ class SmsView(APIView):
             c = expired - (a - b)
             return ErrorResponse(code=2, msg='请稍候再试({0}s)!'.format(c))
 
-        result = SEND_SMS(phone, debug=True)
+        result = SEND_SMS(phone, debug=False)
 
         conn.set(result['phone'], result['code'], ex=5*60)
 
@@ -76,13 +76,13 @@ class SendView(APIView):
 
         serializer = self.serializer_class(data=request.data)
         if not serializer.is_valid():
-            return serializerErrorResponse(serializer)
+            return SerializerErrorResponse(serializer)
         
         phone = serializer.validated_data.get('phone')
         result = models.Message.objects.filter(phone=phone).exists()
         if not result:
             res = serializer.save()
-            res.create_time = res.create_time.strftime('%Y-%m-%d %H:%M:%S')            
+            res.create_time = res.create_time.strftime('%Y-%m-%d %H:%M:%S')
             return SuccessResponse(data=model_to_dict(res), msg='保存成功')
         return ErrorResponse(code=2, msg='不能重复提交')
 

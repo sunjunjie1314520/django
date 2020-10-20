@@ -5,7 +5,7 @@ class Bill(models.Model):
     """
     流水表
     """
-    date = models.CharField(verbose_name="日期", max_length=20)
+    curr_date = models.CharField(verbose_name="日期", max_length=20)
     price = models.CharField(verbose_name="价格", max_length=20)
     remarks = models.CharField(verbose_name="备注", max_length=20)
     create_time = models.DateTimeField(verbose_name="添加时间", default=datetime.now)
