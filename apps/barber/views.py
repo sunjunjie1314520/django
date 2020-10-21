@@ -40,21 +40,22 @@ class ListView(APIView):
 
         total = queryset.aggregate(nums=Sum('price'))['nums']
 
-        point = 0
-        wz = 0
-        cb = 0
-        
+        data = {
+            'wz': 0,
+            'cb': 0,
+            'total': 0,
+            'record': serializer.data
+        }
+    
         if total:
             point = total - total * 0.3
             wz = point / 2
             cb = wz + total * 0.3
-            
-        data = {
-            'wz': round(wz, 2),
-            'cb': round(cb, 2),
-            'total': total if total else 0,
-            'record_list': serializer.data,
-        }
+
+            data['total'] = round(total, 2)
+            data['cb'] = round(cb, 2)
+            data['wz'] = round(wz, 2)
+
         return SuccessResponse(data=data, msg="获取成功")
 
     def post(self, request, *args, **kwargs):

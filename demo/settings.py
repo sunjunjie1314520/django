@@ -28,6 +28,7 @@ sys.path.insert(0, os.path.join(BASE_DIR, 'utils'))
 SECRET_KEY = '7bvj(zu#fd9d!gc-u%*)6!h&b-lz@5+jw+6d$2)4%-1*u=czv5'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
@@ -52,6 +53,7 @@ INSTALLED_APPS = [
     'order.apps.OrderConfig',
     'message.apps.MessageConfig',
     'barber.apps.BarberConfig',
+    'example.apps.ExampleConfig',
 ]
 
 MIDDLEWARE = [
@@ -70,7 +72,7 @@ ROOT_URLCONF = 'demo.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -138,11 +140,16 @@ APPEND_SLASH = False
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-# python manage.py collectstatic 收集所有静态文件
-STATIC_ROOT = os.path.join(BASE_DIR, 'static/assist')
+
+STATIC_ROOT = 'static'  # python manage.py collectstatic 收集所有静态文件
+
+STATICFILES_DIRS = [ 
+    os.path.join(BASE_DIR, "debug"),
+]
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media/assist') # 默认根目录
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 REST_FRAMEWORK = {
     # 'DEFAULT_PERMISSION_CLASSES': [

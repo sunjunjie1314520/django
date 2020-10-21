@@ -17,12 +17,14 @@ def error(code=1, msg=None):
     }
     return data
 
-def SerializerErrorResponse(serializer):
+def SerializerErrorResponse(serializer, debug=False):
     errors = []
     json_data = serializer.errors
     for i, val in enumerate(json_data):
-        # errors.append('%s:%s' % (val, json_data[val][0]))
-        errors.append('%s' % (json_data[val][0]))
+        if debug:
+            errors.append('%s:%s' % (val, json_data[val][0]))
+        else:
+            errors.append('%s' % (json_data[val][0]))
     return Response(error(msg=errors[0]), status=status.HTTP_200_OK)
 
 def SuccessResponse(data=None, msg=None):
