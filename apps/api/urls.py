@@ -15,4 +15,5 @@ urlpatterns = [
     path('/operation/', include('operation.urls')),
     path('/message', include('message.urls')),
     path('/barber', include('barber.urls')),
+    path('/example', include('example.urls')),
 ]
