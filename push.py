@@ -12,7 +12,7 @@ os.system('git commit -m %s' % time)
 os.system('git push')
 try:
     data = {
-        'id': 1,
+        'id': 3,
         'is_update': 'true',
     }
     res = requests.post('http://www.okami.net.cn:8000/git/set_sync', data=data)
