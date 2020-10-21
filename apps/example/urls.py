@@ -6,7 +6,7 @@ from .models import User
 
 def Index(request):
     return JsonResponse({
-        'position': 'example MODULE',
+        'position': 'example MODULE mode',
     })
 
 urlpatterns = [
