@@ -3,6 +3,8 @@ from time import sleep
 from threading import Thread
 from datetime import datetime
 import os
+import json
+
 
 baseURL = 'http://www.okami.net.cn:8000/git/'
 
@@ -10,7 +12,7 @@ def task():
     try:
         r = requests.post(baseURL + 'get_sync', data={'id': 3})
         if r.status_code == 200:
-            print(r.json())
+            print(json.dumps(r.json(), sort_keys=True, indent=4))
             if r.json()['is_update']:
                 print('true-刷新')
                 if r.json()['is_migrate']:
