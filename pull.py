@@ -12,7 +12,7 @@ def task():
     try:
         r = requests.post(baseURL + 'get_sync', data={'id': 3})
         if r.status_code == 200:
-            print(json.dumps(r.json(), sort_keys=True, indent=4))
+            print(json.dumps(r.json(), sort_keys=True, indent=2, ensure_ascii=False))
             if r.json()['is_update']:
                 print('true-刷新')
                 if r.json()['is_migrate']:
@@ -26,7 +26,6 @@ def task():
                 }
                 res = requests.post(baseURL + 'set_sync', data=data)
                 if res.status_code == 200:
-                    os.system('cls')
                     print(res.text)
             else:
                 print('flase-不刷新')
