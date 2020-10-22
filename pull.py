@@ -17,7 +17,12 @@ def task():
                 os.system('m2.bat')
                 os.system('git reset --hard')
                 os.system('git pull')
-                res = requests.post(baseURL + 'set_sync', data={'id': 3})
+                data = {
+                    'id': 3,
+                    'is_update': False,
+                    'is_migrate': False,
+                }
+                res = requests.post(baseURL + 'set_sync', data=data)
                 if res.status_code == 200:
                     print(json.dumps(res.json(), sort_keys=True, indent=2, ensure_ascii=False))
         else:
