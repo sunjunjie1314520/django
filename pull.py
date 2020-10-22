@@ -12,6 +12,7 @@ def task():
         if r.status_code == 200:
             if r.json()['is_update']:
                 print('true-刷新')
+                os.system('m2.bat')
                 os.system('git reset --hard')
                 os.system('git pull')
                 data = {
