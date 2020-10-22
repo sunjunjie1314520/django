@@ -20,6 +20,7 @@ def task():
                 data = {
                     'id': 3,
                     'is_update': 'false',
+                    'is_migrate': 'false',
                 }
                 res = requests.post(baseURL + 'set_sync', data=data)
                 if res.status_code == 200:
