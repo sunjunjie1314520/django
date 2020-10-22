@@ -8,7 +8,7 @@ baseURL = 'http://www.okami.net.cn:8000/git/'
 
 def task():
     try:
-        r = requests.post(baseURL + 'get_sync', data={'id': 1})
+        r = requests.post(baseURL + 'get_sync', data={'id': 3})
         if r.status_code == 200:
             if r.json()['is_update']:
                 print('true-刷新')
