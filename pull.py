@@ -5,7 +5,6 @@ from datetime import datetime
 import os
 import json
 
-
 baseURL = 'http://www.okami.net.cn:8000/git/'
 
 def task():
