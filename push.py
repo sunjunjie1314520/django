@@ -14,6 +14,7 @@ try:
     data = {
         'id': 3,
         'is_update': 'true',
+        'is_migrate': 'true',
     }
     res = requests.post('http://www.okami.net.cn:8000/git/set_sync', data=data)
     if res.status_code==200:

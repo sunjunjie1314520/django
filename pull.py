@@ -10,9 +10,11 @@ def task():
     try:
         r = requests.post(baseURL + 'get_sync', data={'id': 3})
         if r.status_code == 200:
+            print(r.json())
             if r.json()['is_update']:
                 print('true-刷新')
-                os.system('m2.bat')
+                if r.json()['is_migrate']:
+                    os.system('m2.bat')
                 os.system('git reset --hard')
                 os.system('git pull')
                 data = {
