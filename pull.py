@@ -26,7 +26,7 @@ def task():
                 }
                 res = requests.post(baseURL + 'set_sync', data=data)
                 if res.status_code == 200:
-                    print(res.text)
+                    print(json.dumps(res.json(), sort_keys=True, indent=2, ensure_ascii=False))
             else:
                 print('flase-不刷新')
         else:
