@@ -13,9 +13,9 @@ def task():
         r = requests.post(baseURL + 'get_sync', data={'id': 3})
         if r.status_code == 200:
             print(json.dumps(r.json(), sort_keys=True, indent=2, ensure_ascii=False))
+            if r.json()['is_migrate']:
+                os.system('m2.bat')
             if r.json()['is_update']:
-                if r.json()['is_migrate']:
-                    os.system('m2.bat')
                 os.system('git reset --hard')
                 os.system('git pull')
                 data = {
