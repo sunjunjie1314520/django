@@ -6,8 +6,8 @@ from threading import Thread
 
 time = datetime.now().strftime('%Y/%m/%d-%H:%M:%S')
 
-os.system('git add ./')
 print('开始提交')
+os.system('git add ./')
 os.system('git commit -m %s' % time)
 os.system('git push')
 try:
