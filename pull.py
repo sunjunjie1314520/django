@@ -37,6 +37,6 @@ def task():
 task()
 
 while True:
-    sleep(120)
+    sleep(60)
     a = Thread(target=task)
     a.start()
