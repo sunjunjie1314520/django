@@ -130,7 +130,6 @@ class SignatureView(APIView):
 				return ErrorResponse(msg='获取access_token失败')
 
 			if r.json()['errcode']:
-				print(r.json())
 				return ErrorResponse(msg=r.json().get('errmsg'))
 
 			token = r.json().get('access_token')
@@ -151,7 +150,6 @@ class SignatureView(APIView):
 			q = requests.get('https://api.weixin.qq.com/cgi-bin/ticket/getticket', params=params)
 			if q.status_code != 200:
 				return ErrorResponse(msg='获取jsapi_ticket失败')
-			print(q.json())
 			ticket = q.json().get('ticket')
 			conn.set('ticket', ticket, ex=2*60*60)
 			ticket = conn.get('ticket')
