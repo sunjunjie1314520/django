@@ -97,7 +97,7 @@ class SignatureView(APIView):
 
 		appId = 'wxce983ca717e38e20'
 		secret = 'f4ae9773db09eb9da16e7cda040443a0'
-		
+
 		data = {
 			"debug": False,
 			"appId": appId, # 必填，公众号的唯一标识
@@ -112,7 +112,7 @@ class SignatureView(APIView):
 				"link": url,
 				"title": '7许未来',
 				'desc': '国寿安保基金7周年献礼',
-				"imgUrl": '{url}img/logo.jpg'.format(url=url[0: url.rfind('/') + 1]),
+				"imgUrl": '{url}img/logo.jpg'.format(url=url[0: url.rfind('/') + 1])
 			}
 		} 
 
@@ -123,16 +123,23 @@ class SignatureView(APIView):
 			params = {
 				"grant_type":'client_credential',
 				"appid":appId,
-				"secret": secret,
+				"secret": secret
 			}
 			r = requests.get('https://api.weixin.qq.com/cgi-bin/token', params=params)
 			if r.status_code != 200:
 				return ErrorResponse(msg='获取access_token失败')
+
+			if r.json()['errcode']:
+				print(r.json())
+				return ErrorResponse(msg=r.json().get('errmsg'))
+
 			token = r.json().get('access_token')
 			conn.set('access_token', token, ex=2*60*60)
 			token = conn.get('access_token')
-		
+
 		access_token = token.decode('utf-8')
+
+		print(access_token)
 
 		ticket = conn.get('ticket')
 
