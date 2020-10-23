@@ -4,7 +4,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from django_redis import get_redis_connection
-from utils.Validator import phone_validator, name_validator
+from utils.Validator import phone_validator, name_validator, url_validator
 
 from . import models
 
@@ -26,12 +26,12 @@ class SendSerializer(serializers.ModelSerializer):
     textarea = serializers.CharField(label="留言内容", error_messages={
         'required': "留言内容必填",
     })
-    code = serializers.CharField(label="验证码", min_length=6, max_length=6, error_messages={
+    code = serializers.CharField(label="验证码", min_length=6, max_length=6, write_only=True, error_messages={
         'blank': '验证码不能为空',
         'min_length': '验证码为6位数',
         'max_length': '验证码为6位数',
     })
-    create_time = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
+    create_time = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", required=False, read_only=True)
 
     def validate_code(self, value):
 
@@ -59,3 +59,11 @@ class SendSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Message
         fields = '__all__'
+
+
+class SignatureSerializer(serializers.Serializer):
+
+    url = serializers.CharField(label='URL地址', validators=[url_validator, ], error_messages={
+        'required': 'URL地址必填',
+        'blank': 'URL地址不能为空',
+    })

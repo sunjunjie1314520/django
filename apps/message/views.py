@@ -12,8 +12,9 @@ from utils.Sms import SEND_SMS
 from utils.Time import get_timestamp, NowTimeToUTC
 from utils.Random import get_noncestr
 from utils.Sign import sha1
+from utils.Format import to_JSON_Format
 
-from .serializer import SendSerializer, SmsSerializer
+from .serializer import SendSerializer, SmsSerializer, SignatureSerializer
 from . import models
 from . import tasks
 
@@ -62,39 +63,36 @@ class SmsView(APIView):
 		stamp = get_timestamp()
 		conn.set('stamp_{phone}'.format(phone=result['phone']), stamp, ex=expired)
 
-		print("\033[1;31;40m{text}\033[0m".format(text=result))
+		to_JSON_Format(result)
 
 		return SuccessResponse(msg='发送成功')
 
 ################### 表单提交 #####################
 
 class SendView(APIView):
-	serializer_class = SendSerializer
-
 	def post(self, request, *argw, **kwargs):
-		print(request.data.dict())
-
-		serializer = self.serializer_class(data=request.data)
+		serializer = SendSerializer(data=request.data)
 		if not serializer.is_valid():
-			return SerializerErrorResponse(serializer)
+			return SerializerErrorResponse(serializer, debug=True)
 		
 		phone = serializer.validated_data.get('phone')
 		result = models.Message.objects.filter(phone=phone).exists()
 		if not result:
-			res = serializer.save()
-			res.create_time = res.create_time.strftime('%Y-%m-%d %H:%M:%S')
-			return SuccessResponse(data=model_to_dict(res), msg='保存成功')
+			serializer.save()
+			return SuccessResponse(data=serializer.data, msg='保存成功')
 		return ErrorResponse(code=2, msg='不能重复提交')
 
 ################### 公众号签名 #####################
 
 class SignatureView(APIView):
+
 	def post(self, request, *args, **kwargs):
 
-		if not 'url' in request.data.keys():
-			return ErrorResponse(msg='url参数必传')
+		serializer = SignatureSerializer(data=request.data)
+		if not serializer.is_valid():
+			return SerializerErrorResponse(serializer)
 
-		url = request.data.get('url')
+		url = serializer.validated_data.get('url')
 
 		timestamp = get_timestamp()
 		noncestr = get_noncestr()
@@ -114,8 +112,8 @@ class SignatureView(APIView):
 				],
 			"share":{
 				"link": url,
-				"title": '7许未来',
-				'desc': '国寿安保基金7周年献礼',
+				"title": '"7"许未来：送祝福 赢好礼',
+				'desc': '国寿安保基金7岁啦！值此生日之际，诚邀您参与活动赢好礼。',
 				"imgUrl": '{url}img/logo.jpg'.format(url=url[0: url.rfind('/') + 1])
 			}
 		} 
@@ -143,7 +141,6 @@ class SignatureView(APIView):
 		access_token = token.decode('utf-8')
 
 		ticket = conn.get('ticket')
-
 		if not ticket:
 			params = {
 				"access_token":access_token,

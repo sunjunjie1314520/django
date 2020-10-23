@@ -16,3 +16,11 @@ def name_validator(value):
     reg = r"^([\u4e00-\u9fa5]{1,10}|[a-zA-Z]{1,10})$"
     if not re.match(reg, value):
         raise ValidationError('名字仅限于中文和英文')
+
+def url_validator(value):
+    """
+    URL地址
+    """
+    reg = r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+"
+    if not re.match(reg, value):
+        raise ValidationError('URL地址格式不正确')
