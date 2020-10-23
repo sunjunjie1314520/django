@@ -28,8 +28,8 @@ class IndexView(APIView):
 
 		return Response({'位置': 'message module', '即时任务ID': nid.id, '定时任务ID': task.id}, status=200)
 
-################### 发送验证码 #####################
 
+################### 发送验证码 #####################
 class SmsView(APIView):
 
 	serializer_class = SmsSerializer
@@ -67,13 +67,13 @@ class SmsView(APIView):
 
 		return SuccessResponse(msg='发送成功')
 
-################### 表单提交 #####################
 
+################### 表单提交 #####################
 class SendView(APIView):
 	def post(self, request, *argw, **kwargs):
 		serializer = SendSerializer(data=request.data)
 		if not serializer.is_valid():
-			return SerializerErrorResponse(serializer, debug=True)
+			return SerializerErrorResponse(serializer, debug=False)
 		
 		phone = serializer.validated_data.get('phone')
 		result = models.Message.objects.filter(phone=phone).exists()
@@ -82,8 +82,8 @@ class SendView(APIView):
 			return SuccessResponse(data=serializer.data, msg='保存成功')
 		return ErrorResponse(code=2, msg='不能重复提交')
 
-################### 公众号签名 #####################
 
+################### 公众号签名 #####################
 class SignatureView(APIView):
 
 	def post(self, request, *args, **kwargs):
