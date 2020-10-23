@@ -95,9 +95,12 @@ class SignatureView(APIView):
 		timestamp = get_timestamp()
 		noncestr = get_noncestr()
 
+		appId = 'wxce983ca717e38e20'
+		secret = 'f4ae9773db09eb9da16e7cda040443a0'
+		
 		data = {
 			"debug": False,
-			"appId": 'wxa4d1e1b8e398da74', # 必填，公众号的唯一标识
+			"appId": appId, # 必填，公众号的唯一标识
 			"timestamp": timestamp, # 必填，生成签名的时间戳
 			"nonceStr": noncestr, # 必填，生成签名的随机串
 			"signature": '', # 必填，签名
@@ -109,7 +112,7 @@ class SignatureView(APIView):
 				"link": url,
 				"title": '7许未来',
 				'desc': '国寿安保基金7周年献礼',
-				"imgUrl": '{url}img/logo.jpg'.format(url=url[0: url.rfind('/') + 1])
+				"imgUrl": '{url}img/logo.jpg'.format(url=url[0: url.rfind('/') + 1]),
 			}
 		} 
 
@@ -119,8 +122,8 @@ class SignatureView(APIView):
 		if not token:
 			params = {
 				"grant_type":'client_credential',
-				"appid":'wxa4d1e1b8e398da74',
-				"secret":'2d40727f812daccfa6649b69fd79ba3c',
+				"appid":appId,
+				"secret": secret,
 			}
 			r = requests.get('https://api.weixin.qq.com/cgi-bin/token', params=params)
 			if r.status_code != 200:
