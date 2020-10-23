@@ -133,8 +133,6 @@ class SignatureView(APIView):
 		
 		access_token = token.decode('utf-8')
 
-		# print(access_token)
-
 		ticket = conn.get('ticket')
 
 		if not ticket:
