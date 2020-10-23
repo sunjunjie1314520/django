@@ -102,8 +102,6 @@ class SignatureView(APIView):
 			"nonceStr": noncestr, # 必填，生成签名的随机串
 			"signature": '', # 必填，签名
 			"jsApiList": [
-				'onMenuShareAppMessage',    # 1.0 分享到朋友
-				'onMenuShareTimeline',  # 1.0 分享到朋友
 				'updateAppMessageShareData',  # 1.4 分享到朋友
 				'updateTimelineShareData',  # 1.4分享到朋友圈
 				],
@@ -160,5 +158,7 @@ class SignatureView(APIView):
 		temp = '&'.join(["{0}={1}".format(k, sign_data[k]) for k in sorted(sign_data)])
 		
 		data['signature'] = sha1(temp)
+		data['access_token'] = access_token
+		data['jsapi_ticket'] = jsapi_ticket
 
 		return SuccessResponse(data=data, msg='获取成功')
