@@ -91,7 +91,11 @@ class SendView(APIView):
 class SignatureView(APIView):
 	def post(self, request, *args, **kwargs):
 
+		if not 'url' in request.data.keys():
+			return ErrorResponse(msg='url参数必传')
+
 		url = request.data.get('url')
+
 		timestamp = get_timestamp()
 		noncestr = get_noncestr()
 
@@ -121,15 +125,15 @@ class SignatureView(APIView):
 
 		if not token:
 			params = {
-				"grant_type":'client_credential',
-				"appid":appId,
+				"grant_type": 'client_credential',
+				"appid": appId,
 				"secret": secret
 			}
 			r = requests.get('https://api.weixin.qq.com/cgi-bin/token', params=params)
 			if r.status_code != 200:
 				return ErrorResponse(msg='获取access_token失败')
 
-			if r.json()['errcode']:
+			if 'errcode' in r.json().keys():
 				return ErrorResponse(msg=r.json().get('errmsg'))
 
 			token = r.json().get('access_token')
@@ -137,8 +141,6 @@ class SignatureView(APIView):
 			token = conn.get('access_token')
 
 		access_token = token.decode('utf-8')
-
-		print(access_token)
 
 		ticket = conn.get('ticket')
 
