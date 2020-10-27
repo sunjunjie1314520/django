@@ -1,7 +1,7 @@
 import redis
 
 
-conn = redis.Redis(host='47.98.213.63', port=6379)
+conn = redis.Redis(host='42.194.232.90', port=6379)
 
 print(conn.keys())
 
@@ -15,3 +15,4 @@ print(ticket)
 
 # 清除
 # conn.flushall()
+

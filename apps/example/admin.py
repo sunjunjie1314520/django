@@ -4,5 +4,6 @@ from .models import User
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'create_time')
+    list_display = ('id', 'name', 'gender', 'create_time')
+
     # list_display_links = ['id', 'name']

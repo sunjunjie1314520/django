@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 from pathlib import Path
 import sys
 import os
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -94,13 +95,12 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'base_1013',
-        'USER':'root',
-        'PASSWORD':'7392336',
-        'HOST':'127.0.0.1',
+        'USER': 'root',
+        'PASSWORD': '7392336',
+        'HOST': '127.0.0.1',
         'PORT': 3306
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -119,7 +119,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
@@ -143,7 +142,7 @@ STATIC_URL = '/static/'
 
 STATIC_ROOT = 'static'  # python manage.py collectstatic 收集所有静态文件
 
-STATICFILES_DIRS = [ 
+STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "debug"),
 ]
 
@@ -159,11 +158,12 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10
 }
 
+REDIS_URL = '42.194.232.90'
 
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://47.98.213.63:6379",
+        "LOCATION": "redis://{ip}:6379".format(ip=REDIS_URL),
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
             "CONNECTION_POOL_KWARGS": {"max_connections": 100}
@@ -172,12 +172,11 @@ CACHES = {
     }
 }
 
-
 # django-celery 配置
-CELERY_BROKER_URL = 'redis://47.98.213.63:6379' # Broker配置，使用Redis作为消息中间件
+CELERY_BROKER_URL = 'redis://{ip}:6379'.format(ip=REDIS_URL)  # Broker配置，使用Redis作为消息中间件
 CELERY_ACCEPT_CONTENT = ['json']
-CELERY_RESULT_BACKEND = 'redis://47.98.213.63:6379' # BACKEND配置，这里使用redis
-CELERY_TASK_SERIALIZER = 'json' # 结果序列化方案
+CELERY_RESULT_BACKEND = 'redis://{ip}:6379'.format(ip=REDIS_URL)  # BACKEND配置，这里使用redis
+CELERY_TASK_SERIALIZER = 'json'  # 结果序列化方案
 CELERY_TIME_ZONE = 'Asia/Shanghai'
 CELERY_ENABLE_UTC = True
 CELERY_TASK_TIME_LIMIT = 10
