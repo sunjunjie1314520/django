@@ -9,8 +9,7 @@ import requests
 
 class IndexView(APIView):
     def get(self, request, *args, **kwargs):
-        return SuccessResponse(msg='获取成功')
-
+        return SuccessResponse(msg='applets MODULE')
 
 
 class Authorize(APIView):
