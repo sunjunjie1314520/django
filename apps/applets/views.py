@@ -31,7 +31,7 @@ class Authorize(APIView):
         }
         r = requests.get(url=url, params=data)
         if r.status_code == 200:
-            return SuccessResponse(msg='获取成功POST', data=r.json())
+            return SuccessResponse(msg='授权成功', data=r.json())
         return ErrorResponse(msg='jscode2session获取失败')
 
 class LoginView(APIView):
