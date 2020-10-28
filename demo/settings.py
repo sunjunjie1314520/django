@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'message.apps.MessageConfig',
     'barber.apps.BarberConfig',
     'example.apps.ExampleConfig',
+    'applets.apps.AppletsConfig',
 ]
 
 MIDDLEWARE = [

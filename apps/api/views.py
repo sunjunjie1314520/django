@@ -1,3 +1,7 @@
-from django.shortcuts import render
+from rest_framework.views import APIView
 
-# Create your views here.
+from utils.Response import SuccessResponse
+
+class IndexView(APIView):
+    def get(self, request, *args, **kwargs):
+        return SuccessResponse(msg='API MODULE')

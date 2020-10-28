@@ -15,4 +15,3 @@ print(ticket)
 
 # 清除
 # conn.flushall()
-
