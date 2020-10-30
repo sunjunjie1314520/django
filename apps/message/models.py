@@ -2,6 +2,7 @@ from django.db import models
 
 from datetime import datetime
 
+
 class Message(models.Model):
     """
     留言表
@@ -12,7 +13,7 @@ class Message(models.Model):
     create_time = models.DateTimeField(verbose_name="留言时间", default=datetime.now, null=True, blank=True)
 
     class Meta:
-        verbose_name ="留言内容"
+        verbose_name = "留言内容"
         verbose_name_plural = "留言内容"
     
     def __str__(self):
