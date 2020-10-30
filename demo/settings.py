@@ -30,7 +30,7 @@ SECRET_KEY = '7bvj(zu#fd9d!gc-u%*)6!h&b-lz@5+jw+6d$2)4%-1*u=czv5'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -185,3 +185,10 @@ CELERY_TASK_TIME_LIMIT = 10
 # 跨域配置
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_ALLOW_ALL = True
+
+
+try:
+    from .local_settings import *
+except ImportError:
+    print('import error')
+    pass
