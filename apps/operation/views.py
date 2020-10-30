@@ -9,17 +9,11 @@ from rest_framework import status
 from .models import Address
 from .serializer import AddressSerializer
 
-from utils.Response import BasicView
-
-
-
 def Index(request):
-    return JsonResponse({'title': '用户操作模块'})
+    return JsonResponse({'title': '管理模块'})
 
 
-class AddressViewSet(APIView, BasicView):
-
-    serializer_class = AddressSerializer
+class AddressViewSet(APIView):
 
     def get(self, request):
         data = {
@@ -29,12 +23,12 @@ class AddressViewSet(APIView, BasicView):
             'total': 0
         }
         address = Address.objects.all()[:2]
-        serializer = self.serializer_class(address, many=True)
+        serializer = AddressSerializer(instance=address, many=True)
 
         data['data'] = serializer.data
         data['total'] = len(serializer.data)
 
-        return Response(data)
+        return Response(data, status=200)
 
 
     

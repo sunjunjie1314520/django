@@ -67,7 +67,6 @@ class BookDetailView(APIView):
 
 
 class AuthView(APIView):
-
     def post(self, request, *args, **kwargs):
         auth = GeneralAuthentication(request)
         if not auth.is_auth():

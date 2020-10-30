@@ -11,7 +11,7 @@ from django_redis import get_redis_connection
 from django.forms.models import model_to_dict
 from django.db.models import Sum
 
-from utils.Response import BasicView, SuccessResponse, ErrorResponse, SerializerErrorResponse
+from utils.Response import SuccessResponse, ErrorResponse, SerializerErrorResponse
 from utils.Sms import SEND_SMS
 from utils.Time import get_timestamp, NowTimeToUTC, get_ToDay_Type1, get_ToDay_Type2
 from utils.Random import get_noncestr

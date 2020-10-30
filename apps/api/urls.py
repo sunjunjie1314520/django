@@ -6,7 +6,7 @@ from . import views
 
 urlpatterns = [
     path('', views.IndexView.as_view()),
-    path('/users/', include('users.urls')),
+    path('/users', include('users.urls')),
     path('/operation/', include('operation.urls')),
     path('/message', include('message.urls')),
     path('/barber', include('barber.urls')),

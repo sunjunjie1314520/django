@@ -3,11 +3,10 @@ import requests
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from django.http import JsonResponse
 from django_redis import get_redis_connection
 from django.forms.models import model_to_dict
 
-from utils.Response import BasicView, SuccessResponse, ErrorResponse, SerializerErrorResponse
+from utils.Response import SuccessResponse, ErrorResponse, SerializerErrorResponse
 from utils.Sms import SEND_SMS
 from utils.Time import get_timestamp, NowTimeToUTC
 from utils.Random import get_noncestr
@@ -73,7 +72,7 @@ class SendView(APIView):
 	def post(self, request, *argw, **kwargs):
 		serializer = SendSerializer(data=request.data)
 		if not serializer.is_valid():
-			return SerializerErrorResponse(serializer, debug=False)
+			return SerializerErrorResponse(serializer)
 		
 		phone = serializer.validated_data.get('phone')
 		result = models.Message.objects.filter(phone=phone).exists()
