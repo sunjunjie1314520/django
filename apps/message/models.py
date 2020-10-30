@@ -8,7 +8,7 @@ class Message(models.Model):
     """
     name = models.CharField( verbose_name="姓名", max_length=10)
     phone = models.CharField(verbose_name="手机号", max_length=11, unique=True)
-    textarea = models.CharField(verbose_name="留言内容", max_length=100)
+    textarea = models.CharField(verbose_name="留言内容", max_length=200)
     create_time = models.DateTimeField(verbose_name="留言时间", default=datetime.now, null=True, blank=True)
 
     class Meta:

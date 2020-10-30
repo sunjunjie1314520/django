@@ -1,7 +1,9 @@
 from rest_framework.views import APIView
+from rest_framework.generics import RetrieveAPIView
 
 from utils.Response import SuccessResponse, ErrorResponse, SerializerErrorResponse
 from utils.Paginator import PaginatorData
+from utils.Auth import GeneralAuthentication
 
 from . import models
 from .serializer import BookModelSerializer
@@ -9,6 +11,7 @@ from .serializer import BookModelSerializer
 
 class BookListView(APIView):
     serializer_class = BookModelSerializer
+
     def get(self, request, *args, **kwargs):
         """
         查询所有书籍
@@ -61,3 +64,14 @@ class BookDetailView(APIView):
             return ErrorResponse(code=2, msg='详情不存在')
         book.delete()
         return SuccessResponse(msg='删除成功')
+
+
+class AuthView(APIView):
+
+    def post(self, request, *args, **kwargs):
+        auth = GeneralAuthentication(request)
+        if not auth.is_auth():
+            return ErrorResponse(**auth.is_auth_data())
+
+        serializer = BookModelSerializer(instance=auth.get_object())
+        return SuccessResponse(msg='个人资料', data=serializer.data)

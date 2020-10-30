@@ -8,10 +8,12 @@ from utils.Validator import phone_validator, name_validator, url_validator
 
 from . import models
 
+
 class SmsSerializer(serializers.Serializer):
     phone = serializers.CharField(label="手机号", validators=[phone_validator,], error_messages={
         'blank': "手机号不能为空",
     })
+
 
 class SendSerializer(serializers.ModelSerializer):
     name = serializers.CharField(label="姓名", min_length=2, max_length=10, validators=[name_validator, ], error_messages={
