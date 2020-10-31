@@ -22,13 +22,8 @@ class IndexView(APIView):
 class LoginSerializer(serializers.ModelSerializer):
 
     phone = serializers.CharField(label="手机号", validators=[phone_validator, ], error_messages={
-        'required': '手机号必填'
-    })
-
-    code = serializers.CharField(label="验证码", min_length=6, max_length=6, write_only=True, error_messages={
-        'required': '验证码必填',
-        'min_length': '验证码为6位数字',
-        'max_length': '验证码为6位数字',
+        'required': '手机号必填',
+        'blank': "手机号码不能为空",
     })
 
     password = serializers.CharField(label='密码', max_length=32, min_length=32, error_messages={
@@ -36,6 +31,12 @@ class LoginSerializer(serializers.ModelSerializer):
         'blank': '密码不能为空',
         'min_length': '密码为32位的MD5',
         'max_length': '密码为32位的MD5',
+    })
+
+    code = serializers.CharField(label="验证码", min_length=6, max_length=6, write_only=True, error_messages={
+        'required': '验证码必填',
+        'min_length': '验证码为6位数字',
+        'max_length': '验证码为6位数字',
     })
 
     create_time = serializers.DateTimeField(format='%Y-%m-%d %H:%M:%S', read_only=True)
