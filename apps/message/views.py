@@ -4,7 +4,6 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from django_redis import get_redis_connection
-from django.forms.models import model_to_dict
 
 from utils.Response import SuccessResponse, ErrorResponse, SerializerErrorResponse
 from utils.Sms import SEND_SMS
@@ -17,7 +16,8 @@ from .serializer import SendSerializer, SmsSerializer, SignatureSerializer
 from . import models
 from . import tasks
 
-########## message module
+################### Message 首页 #####################
+
 class IndexView(APIView):
 	def get(self, request, *args, **kwargs):
 		# 即时任务
@@ -29,6 +29,7 @@ class IndexView(APIView):
 
 
 ################### 发送验证码 #####################
+
 class SmsView(APIView):
 
 	serializer_class = SmsSerializer
@@ -55,7 +56,7 @@ class SmsView(APIView):
 			c = expired - (a - b)
 			return ErrorResponse(code=2, msg='请稍候再试({0}s)!'.format(c))
 
-		result = SEND_SMS(phone, debug=False)
+		result = SEND_SMS(phone)
 
 		conn.set(result['phone'], result['code'], ex=5*60)
 
@@ -63,11 +64,11 @@ class SmsView(APIView):
 		conn.set('stamp_{phone}'.format(phone=result['phone']), stamp, ex=expired)
 
 		to_JSON_Format(result)
-
 		return SuccessResponse(msg='发送成功')
 
 
 ################### 表单提交 #####################
+
 class SendView(APIView):
 	def post(self, request, *argw, **kwargs):
 		serializer = SendSerializer(data=request.data)
@@ -76,6 +77,10 @@ class SendView(APIView):
 		
 		phone = serializer.validated_data.get('phone')
 		result = models.Message.objects.filter(phone=phone).exists()
+
+		conn = get_redis_connection()
+		conn.delete(phone)
+
 		if not result:
 			serializer.save()
 			return SuccessResponse(data=serializer.data, msg='保存成功')
@@ -83,6 +88,7 @@ class SendView(APIView):
 
 
 ################### 公众号签名 #####################
+
 class SignatureView(APIView):
 
 	def post(self, request, *args, **kwargs):

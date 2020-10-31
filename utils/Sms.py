@@ -1,4 +1,6 @@
 
+from django.conf import settings
+
 import requests
 import hashlib
 import random
@@ -12,7 +14,7 @@ def MD5(string):
 def RANDOM_CODE():
     return random.randint(100000, 999999)
 
-def SEND_SMS(phone, debug=False):
+def SEND_SMS(phone):
     # 我们的国内短信接口是http标准协议，接口说明和demo的地址：
     # http://www.b2m.cn/static/doc/sms/onlysms_or.html
     #  
@@ -29,6 +31,8 @@ def SEND_SMS(phone, debug=False):
     
     random_code = RANDOM_CODE()
 
+    debug = settings.DEBUG
+
     if not debug:
         url = 'http://bjksmtn.b2m.cn/simpleinter/sendSMS'
 
@@ -44,11 +48,13 @@ def SEND_SMS(phone, debug=False):
             'content': '【国寿安保基金】您的验证码为：{code}，验证码5分钟有效'.format(code=random_code),
         }
         
-        res = requests.get(url, params=data)
-        if res.status_code == 200:
-            if res.json()['code'] == 'SUCCESS':
+        sendRes = requests.get(url, params=data)
+
+        if sendRes.status_code == 200:
+            if sendRes.json()['code'] == 'SUCCESS':
                 return {'phone': phone, 'code': random_code, 'debug': debug}
     return {'phone': phone, 'code': random_code, 'debug': debug}
+
 
 if __name__ == "__main__":
     res = SEND_SMS('19871455054, 18827183521')

@@ -6,10 +6,12 @@ from .models import User
 
 from . import views
 
+
 def Index(request):
     return JsonResponse({
         'position': 'EXAMPLE MODULE',
     })
+
 
 urlpatterns = [
     path('', Index),

@@ -10,5 +10,5 @@ class UserProfileAdmin(admin.ModelAdmin):
 
 @admin.register(Users)
 class UsersAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'phone', 'password', 'md5_password', 'create_time')
+    list_display = ('id', 'phone', 'password', 'md5_password', 'create_time')
     list_display_links = ['id', 'phone']

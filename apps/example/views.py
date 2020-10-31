@@ -25,7 +25,7 @@ class BookListView(APIView):
         """
         serializer = self.serializer_class(data=request.data)
         if not serializer.is_valid():
-            return SerializerErrorResponse(serializer, debug=True)
+            return SerializerErrorResponse(serializer)
         serializer.save()
         return SuccessResponse(msg='保存成功', data=serializer.data)
 
@@ -51,7 +51,7 @@ class BookDetailView(APIView):
         book_data = request.data
         serializer = BookModelSerializer(instance=book, data=book_data)
         if not serializer.is_valid():
-            return SerializerErrorResponse(serializer, debug=True)
+            return SerializerErrorResponse(serializer)
         serializer.save()
         return SuccessResponse(msg='详情修改成功', data=serializer.data)
 
@@ -72,5 +72,7 @@ class AuthView(APIView):
         if not auth.is_auth():
             return ErrorResponse(**auth.is_auth_data())
 
-        serializer = BookModelSerializer(instance=auth.get_object())
-        return SuccessResponse(msg='个人资料', data=serializer.data)
+        queryset = models.User.objects.all()[:2]
+        serializer = BookModelSerializer(instance=queryset, many=True)
+
+        return SuccessResponse(msg='测试登录成功', data=serializer.data)

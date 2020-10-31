@@ -30,8 +30,8 @@ class SendSerializer(serializers.ModelSerializer):
     })
     code = serializers.CharField(label="验证码", min_length=6, max_length=6, write_only=True, error_messages={
         'blank': '验证码不能为空',
-        'min_length': '验证码为6位数',
-        'max_length': '验证码为6位数',
+        'min_length': '验证码为6位数字',
+        'max_length': '验证码为6位数字',
     })
     create_time = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", required=False, read_only=True)
 
@@ -51,7 +51,7 @@ class SendSerializer(serializers.ModelSerializer):
             raise ValidationError('验证码错误')
         
         conn.delete('stamp_{phone}'.format(phone=phone))
-        
+
         return value
 
     def validate(self, attrs):

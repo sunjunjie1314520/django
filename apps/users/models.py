@@ -15,14 +15,14 @@ class UserProfile(AbstractUser):
     def __str__(self):
         return self.username
 
+
 class Users(models.Model):
     """
     普通用户
     """
-    name = models.CharField(verbose_name='姓名', max_length=12, null=True, blank=True, default="")
     phone = models.CharField(verbose_name='手机号', max_length=11, null=False, blank=False, unique=True, default='')
-    password = models.CharField(verbose_name='明文密码', max_length=20, null=True, blank=True, default="")
-    md5_password = models.CharField(verbose_name='加密密码', max_length=32, null=True, blank=True, default="")
+    password = models.CharField(verbose_name='明文密码', max_length=32, null=False, blank=False, default="")
+    md5_password = models.CharField(verbose_name='加密密码', max_length=32, null=False, blank=False, default="")
     create_time = models.DateTimeField(verbose_name='注册时间', default=datetime.now)
     
     class Meta:
@@ -30,4 +30,4 @@ class Users(models.Model):
         verbose_name_plural = '普通用户'
     
     def __str__(self):
-        return '{}, {}'.format(self.name, self.phone)
+        return '{}, {}'.format(self.phone, self.password)
