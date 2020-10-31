@@ -1,5 +1,7 @@
 import requests
 
+from django.conf import settings
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
@@ -11,6 +13,7 @@ from utils.Time import get_timestamp, NowTimeToUTC
 from utils.Random import get_noncestr
 from utils.Sign import sha1
 from utils.Format import to_JSON_Format
+
 
 from .serializer import SendSerializer, SmsSerializer, SignatureSerializer
 from . import models
@@ -58,13 +61,14 @@ class SmsView(APIView):
 
 		result = SEND_SMS(phone)
 
-		conn.set(result['phone'], result['code'], ex=5*60)
+		result.send()
+
+		conn.set(result.phone, result.code, ex=5*60)
 
 		stamp = get_timestamp()
-		conn.set('stamp_{phone}'.format(phone=result['phone']), stamp, ex=expired)
+		conn.set('stamp_{phone}'.format(phone=result.phone), stamp, ex=expired)
 
-		to_JSON_Format(result)
-		return SuccessResponse(msg='发送成功')
+		return SuccessResponse(msg='发送成功', data=result.get_data())
 
 
 ################### 表单提交 #####################
