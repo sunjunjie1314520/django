@@ -69,8 +69,8 @@ class GenerateToken:
         encoded_jwt = jwt.encode(payload={**payload, **self.payload}, key=settings.SECRET_KEY, algorithm='HS256', headers=self.headers).decode('utf8')
         de_code = jwt.decode(encoded_jwt, settings.SECRET_KEY, algorithms=['HS256'])
         # print(encoded_jwt)
-        print(de_code)
-
+        if settings.DEBUG:
+            print(de_code)
         self.token = {'token': encoded_jwt}
 
     def get_token(self):

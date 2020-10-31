@@ -157,7 +157,9 @@ class RegisterView(APIView):
         conn = get_redis_connection()
         conn.delete(serializer.data.get('phone'))
 
-        return SuccessResponse(msg='注册成功', data=serializer.data)
+        token = GenerateToken(serializer.data).get_token()
+
+        return SuccessResponse(msg='注册成功', data=token)
 
 
 ################### 用户资料 #####################
