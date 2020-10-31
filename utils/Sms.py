@@ -18,7 +18,7 @@ class SEND_SMS:
 
     def __init__(self, phone):
         self.phone = phone
-        self.code = ''
+        self.code = RANDOM_CODE()
     
     def send(self):
         # 我们的国内短信接口是http标准协议，接口说明和demo的地址：
@@ -34,8 +34,6 @@ class SEND_SMS:
         # http://www.btom.cn
         # 端口是8080
         # 可任选，接口里有六种发送方法，用哪种都可以。
-        
-        self.code = RANDOM_CODE()
 
         debug = settings.DEBUG
 
