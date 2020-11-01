@@ -35,6 +35,7 @@ class LoginSerializer(serializers.ModelSerializer):
 
     code = serializers.CharField(label="验证码", min_length=6, max_length=6, write_only=True, error_messages={
         'required': '验证码必填',
+        'blank': '验证码不能为空',
         'min_length': '验证码为6位数字',
         'max_length': '验证码为6位数字',
     })
