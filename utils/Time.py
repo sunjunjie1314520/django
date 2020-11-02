@@ -66,6 +66,23 @@ def get_ToDay_Type2(str_time=None):
     print(start, end)
     return [start.strftime('%Y-%m-%d'), end.strftime('%Y-%m-%d')]
 
+
+def get_ToDay_Type3(str_time=None):
+    """
+    获取今天的时间
+    """
+    de = time.strptime(str_time, "%Y-%m-%d %H:%M:%S")
+    y = de.tm_year
+    m = de.tm_mon
+    d = de.tm_mday
+    h = de.tm_hour
+    m1 = de.tm_min
+    s = de.tm_sec
+    start = datetime(y, m, d, h, m1, s)
+    end = start + timedelta(minutes=15, seconds=0)
+    return [start.strftime('%Y-%m-%d %H:%M:%S'), end.strftime('%Y-%m-%d %H:%M:%S')]
+
+
 if __name__ == "__main__":
-    a = get_ToDay_Type2('2020-09-20')
+    a = get_ToDay_Type3('2020-11-02 22:44:00')
     print(a)

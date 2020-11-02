@@ -27,12 +27,17 @@ class SubmitView(APIView):
         if not serializer.is_valid():
             return SerializerErrorResponse(serializer)
 
-        serializer.save()
+        info = serializer.save()
 
-        # models.Examine.objects.create(name='姓名', opinion='同意', info=info)
+        examine_name = request.data.get('examine_name')
+        examine_opinion = request.data.get('examine_opinion')
+
+        import datetime
+        new_time = datetime.datetime.now() + datetime.timedelta(minutes=15)
+
+        models.Examine.objects.create(name=examine_name, opinion=examine_opinion, info=info, create_time=new_time)
 
         return SuccessResponse(msg='提交成功', data=serializer.data)
-
 
 
 class SubmitSerializer1(serializers.ModelSerializer):
@@ -69,8 +74,6 @@ class BookDetailView(APIView):
         修改
         """
         book = models.Info.objects.filter(pk=pk).first()
-        print(book)
-
         if not book:
             return ErrorResponse(code=2, msg='ID不存在')
         book_data = request.data
