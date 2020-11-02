@@ -42,7 +42,7 @@ class Info(models.Model):
         ordering = ['-id']
 
     def __str__(self):
-        return '{0}{1}'.format(self.beian, self.xm)
+        return '{0}-{1}'.format(self.beian, self.xm)
 
 
 class Examine(models.Model):
