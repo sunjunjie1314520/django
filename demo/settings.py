@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'barber.apps.BarberConfig',
     'example.apps.ExampleConfig',
     'applets.apps.AppletsConfig',
+    'scholl.apps.SchollConfig',
 ]
 
 MIDDLEWARE = [
@@ -190,5 +191,4 @@ CORS_ORIGIN_ALLOW_ALL = True
 try:
     from .local_settings import *
 except ImportError:
-    print('import error')
     pass

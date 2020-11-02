@@ -74,8 +74,6 @@ class LoginView(APIView):
         if not vate_serializer.is_valid():
             return SerializerErrorResponse(vate_serializer)
 
-        print(vate_serializer.data)
-
         phone = vate_serializer.validated_data.get('phone')
         password = vate_serializer.validated_data.get('password')
         query = models.Users.objects.filter(phone=phone, md5_password=password).first()
