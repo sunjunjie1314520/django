@@ -18,3 +18,18 @@ class Message(models.Model):
     
     def __str__(self):
         return self.name
+
+
+class Visit(models.Model):
+    """
+    访问记录表
+    """
+    address = models.CharField(verbose_name="IP地址", max_length=30)
+    create_time = models.DateTimeField(verbose_name="创建时间", default=datetime.now, null=True, blank=True)
+
+    class Meta:
+        verbose_name = "访问记录"
+        verbose_name_plural = "访问记录"
+
+    def __str__(self):
+        return self.address

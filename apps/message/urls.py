@@ -6,4 +6,5 @@ urlpatterns = [
     path('/sms', views.SmsView.as_view()),
     path('/send', views.SendView.as_view()),
     path('/signature', views.SignatureView.as_view()),
+    path('/history', views.VisitHistoryView.as_view()),
 ]

@@ -3,7 +3,7 @@ import redis
 
 conn = redis.Redis(host='42.194.232.90', port=6379)
 
-# conn.set('15971345754', '415648', ex=300)
+conn.set('15971345754', '123456', ex=300)
 
 # conn.flushall()
 

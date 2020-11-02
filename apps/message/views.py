@@ -176,3 +176,19 @@ class SignatureView(APIView):
 		data['jsapi_ticket'] = jsapi_ticket
 
 		return SuccessResponse(data=data, msg='获取成功')
+
+
+class VisitHistoryView(APIView):
+
+	def post(self, request, *args, **kwargs):
+		if 'HTTP_X_FORWARDED_FOR' in request.META:  # 获取 ip
+			client_ip = request.META['HTTP_X_FORWARDED_FOR']
+			client_ip = client_ip.split(",")[0]  # 所以这里是真实的 ip
+		else:
+			client_ip = request.META['REMOTE_ADDR']  # 这里获得代理 ip
+		print(client_ip)
+		ip_exist = models.Visit.objects.filter(address=client_ip)
+		if not ip_exist:
+			models.Visit.objects.create(address=client_ip)
+			return SuccessResponse(msg='记录成功')
+		return ErrorResponse(msg='记录已存在')
