@@ -110,11 +110,6 @@ class RegisterSerializer(serializers.ModelSerializer):
         'blank': "手机号码不能为空",
     })
 
-    password = serializers.CharField(label='密码', max_length=32, error_messages={
-        'blank': "密码不能为空",
-        'required': '密码必填项',
-    })
-
     code = serializers.CharField(label="验证码", min_length=6, max_length=6, write_only=True, error_messages={
         'blank': '验证码不能为空',
         'min_length': '验证码为6位数字',
@@ -141,9 +136,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         return value
 
     def validate(self, attrs):
-        attrs['md5_password'] = MD5(self.initial_data.get('password'))
         del attrs['code']
-
         return attrs
 
     class Meta:
