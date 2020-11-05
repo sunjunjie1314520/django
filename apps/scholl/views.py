@@ -4,6 +4,8 @@ from rest_framework.views import APIView
 from rest_framework import serializers
 from . import models
 from django.forms.models import model_to_dict
+from utils.Auth import GeneralAuthentication
+
 
 class IndexView(APIView):
     def get(self, request, *args, **kwargs):
@@ -93,3 +95,16 @@ class BookDetailView(APIView):
             return ErrorResponse(code=2, msg='ID不存在')
         book.delete()
         return SuccessResponse(msg='删除成功')
+
+
+class RecordListlView(APIView):
+
+    def get(self, request, *args, **kwargs):
+        auth = GeneralAuthentication(request)
+        if not auth.is_auth():
+            return ErrorResponse(**auth.is_auth_data())
+
+        queryset = models.Info.objects.filter(users=auth.get_object())
+        serializer = SubmitSerializer1(instance=queryset, many=True)
+
+        return SuccessResponse(msg='获取成功', data=serializer.data)

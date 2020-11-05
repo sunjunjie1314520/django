@@ -1,6 +1,9 @@
 from django.db import models
 from datetime import datetime
 
+from users.models import Users
+
+
 class Info(models.Model):
 
     status_choices = (
@@ -35,6 +38,8 @@ class Info(models.Model):
     status = models.IntegerField(verbose_name="出校状态", choices=status_choices, default=1)
 
     create_time = models.DateTimeField(verbose_name='创建时间', default=datetime.now)
+
+    users = models.ForeignKey(verbose_name='用户', to=Users, on_delete=models.CASCADE, null=True, blank=True)
 
     class Meta:
         verbose_name = "备案记录"

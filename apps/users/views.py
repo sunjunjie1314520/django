@@ -9,6 +9,7 @@ from utils.Sms import MD5
 
 from django_redis import get_redis_connection
 from . import models
+from django.forms.models import model_to_dict
 
 
 ################### 首页 ###################
@@ -71,11 +72,23 @@ class LoginView(APIView):
         query = models.Users.objects.filter(phone=phone).first()
 
         if not query:
-            return ErrorResponse(msg='手机号不存在')
+            # return ErrorResponse(msg='手机号不存在')
+            serializer = RegisterSerializer(data=request.data)
+            if not serializer.is_valid():
+                return SerializerErrorResponse(serializer)
+
+            serializer.save()
+
+            # 删除验证码
+            conn = get_redis_connection()
+            conn.delete(serializer.data.get('phone'))
+
+            token = GenerateToken()
+            token.generate(serializer.data)
+
+            return SuccessResponse(msg='注册成功', data=token.get_token())
 
         serializer = LoginSerializer(instance=query)
-
-        print(serializer.data)
 
         token = GenerateToken()
         token.generate(serializer.data)
@@ -152,15 +165,23 @@ class RegisterView(APIView):
         conn = get_redis_connection()
         conn.delete(serializer.data.get('phone'))
 
-        token = GenerateToken(serializer.data).get_token()
+        token = GenerateToken()
+        token.generate(serializer.data)
 
-        return SuccessResponse(msg='注册成功', data=token)
+        return SuccessResponse(msg='注册成功', data=token.get_token())
 
 
 ################### 用户资料 #####################
 
 class PersonalViewSerializer(serializers.ModelSerializer):
     create_time = serializers.DateTimeField(format='%Y-%m-%d %H:%M:%S', read_only=True)
+
+    user_data = serializers.SerializerMethodField()
+
+    def get_user_data(self, obj):
+        queryset = models.UsersData.objects.filter(users=obj).first()
+
+        return model_to_dict(instance=queryset, fields=['id', 'money', 'name', 'number', 'gender', 'college', 'major', 'grade', 'head_img', 'reviewer_name', 'create_time'])
 
     class Meta:
         model = models.Users
@@ -178,3 +199,25 @@ class PersonalView(APIView):
 
         serializer = PersonalViewSerializer(instance=auth.get_object())
         return SuccessResponse(msg='个人资料', data=serializer.data)
+
+class ModifyUserDataViewSerializer(serializers.ModelSerializer):
+    create_time = serializers.DateTimeField(format='%Y-%m-%d %H:%M:%S', read_only=True)
+
+    class Meta:
+        model = models.UsersData
+        fields = '__all__'
+
+class ModifyUserDataView(APIView):
+    def put(self, request, pk):
+        """
+        修改资料
+        """
+        book = models.UsersData.objects.filter(id=pk).first()
+        if not book:
+            return ErrorResponse(code=2, msg='不存在')
+        book_data = request.data
+        serializer = ModifyUserDataViewSerializer(instance=book, data=book_data)
+        if not serializer.is_valid():
+            return SerializerErrorResponse(serializer)
+        serializer.save()
+        return SuccessResponse(msg='修改成功', data=serializer.data)
