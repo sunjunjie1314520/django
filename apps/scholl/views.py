@@ -51,12 +51,12 @@ class SubmitSerializer1(serializers.ModelSerializer):
         if not res:
             return None
         res.create_time = res.create_time.strftime('%Y-%m-%d %H:%M:%S')
-        return model_to_dict(res, fields=['id', 'name', 'opinion', 'info', 'create_time'])
-
+        return model_to_dict(instance=res, fields=['id', 'name', 'opinion', 'info', 'create_time'])
 
     class Meta:
         model = models.Info
         fields = '__all__'
+
 
 class BookDetailView(APIView):
     def get(self, request, pk):

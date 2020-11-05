@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
-
+from corsheaders.defaults import default_headers
 from pathlib import Path
 import sys
 import os
@@ -187,8 +187,14 @@ CELERY_TASK_TIME_LIMIT = 10
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_ALLOW_ALL = True
 
+# 自定义http标头
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    'token',
+]
 
 try:
     from .local_settings import *
 except ImportError:
     pass
+
+

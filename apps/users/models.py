@@ -31,3 +31,15 @@ class Users(models.Model):
     
     def __str__(self):
         return '{}, {}'.format(self.phone, self.password)
+
+
+class UsersData(models.Model):
+    users = models.ForeignKey(verbose_name='用户', to='Users', on_delete=models.CASCADE)
+    money = models.FloatField(verbose_name='余额', default=0)
+
+    class Meta:
+        verbose_name = '用户资料',
+        verbose_name_plural = '用户资料'
+
+    def __str__(self):
+        return self.users.phone

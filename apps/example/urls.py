@@ -16,6 +16,8 @@ def Index(request):
 urlpatterns = [
     path('', Index),
     path('/test', views.BookListView.as_view()),
-    path('/test/<int:book_id>', views.BookDetailView.as_view()),
+    path('/test/<int:pk>', views.BookDetailView.as_view()),
     path('/auth', views.AuthView.as_view()),
+
+    path('/news_detail/<int:pk>', views.NewsDetailView.as_view()),
 ]

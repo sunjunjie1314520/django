@@ -14,7 +14,6 @@ from . import models
 ################### 首页 ###################
 
 class IndexView(APIView):
-
     def get(self, request, *args, **kwargs):
         return SuccessResponse(msg='用户模块')
 
@@ -24,13 +23,6 @@ class LoginSerializer(serializers.ModelSerializer):
     phone = serializers.CharField(label="手机号", validators=[phone_validator, ], error_messages={
         'required': '手机号必填',
         'blank': "手机号码不能为空",
-    })
-
-    password = serializers.CharField(label='密码', max_length=32, min_length=32, error_messages={
-        'required': '密码必填',
-        'blank': '密码不能为空',
-        'min_length': '密码为32位的MD5',
-        'max_length': '密码为32位的MD5',
     })
 
     code = serializers.CharField(label="验证码", min_length=6, max_length=6, write_only=True, error_messages={
@@ -75,21 +67,24 @@ class LoginView(APIView):
             return SerializerErrorResponse(vate_serializer)
 
         phone = vate_serializer.validated_data.get('phone')
-        password = vate_serializer.validated_data.get('password')
-        query = models.Users.objects.filter(phone=phone, md5_password=password).first()
+
+        query = models.Users.objects.filter(phone=phone).first()
 
         if not query:
-            return ErrorResponse(msg='账号或者密码错误')
+            return ErrorResponse(msg='手机号不存在')
 
         serializer = LoginSerializer(instance=query)
 
-        token = GenerateToken(serializer.data).get_token()
+        print(serializer.data)
+
+        token = GenerateToken()
+        token.generate(serializer.data)
 
         # 删除验证码
         conn = get_redis_connection()
         conn.delete(phone)
 
-        return SuccessResponse(msg='登录成功', data=token)
+        return SuccessResponse(msg='登录成功', data=token.get_token())
 
 
 ################### 用户注册 #####################

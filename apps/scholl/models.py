@@ -46,7 +46,6 @@ class Info(models.Model):
 
 
 class Examine(models.Model):
-
     name = models.CharField(verbose_name="审核人姓名", max_length=100)
     opinion = models.CharField(verbose_name="审核意见", max_length=100)
     info = models.ForeignKey(verbose_name='备案', to='Info', on_delete=models.CASCADE)

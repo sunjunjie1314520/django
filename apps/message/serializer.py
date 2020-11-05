@@ -1,5 +1,3 @@
-
-
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
@@ -10,7 +8,8 @@ from . import models
 
 
 class SmsSerializer(serializers.Serializer):
-    phone = serializers.CharField(label="手机号", validators=[phone_validator,], error_messages={
+    phone = serializers.CharField(label="手机号", validators=[phone_validator, ], error_messages={
+        'required': "手机号必填",
         'blank': "手机号不能为空",
     })
 
@@ -23,6 +22,7 @@ class SendSerializer(serializers.ModelSerializer):
         'max_length': '姓名不能多于10个',
     })
     phone = serializers.CharField(label="手机号", validators=[phone_validator, ], error_messages={
+        'required': "手机号必填",
         'blank': "手机号码不能为空",
     })
     textarea = serializers.CharField(label="留言内容", error_messages={
@@ -43,13 +43,13 @@ class SendSerializer(serializers.ModelSerializer):
         phone = self.initial_data.get('phone')
         conn = get_redis_connection()
         code = conn.get(phone)
-        
+
         if not code:
             raise ValidationError('验证码不存在')
-        
+
         if value != code.decode('utf-8'):
             raise ValidationError('验证码错误')
-        
+
         conn.delete('stamp_{phone}'.format(phone=phone))
 
         return value
@@ -64,7 +64,6 @@ class SendSerializer(serializers.ModelSerializer):
 
 
 class SignatureSerializer(serializers.Serializer):
-
     url = serializers.CharField(label='URL地址', validators=[url_validator, ], error_messages={
         'required': 'URL地址必填',
         'blank': 'URL地址不能为空',

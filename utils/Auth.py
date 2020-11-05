@@ -61,15 +61,16 @@ class GenerateToken:
         'alg': 'HS256',
     }
 
-    payload = {
-        'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=10 * 60)
-    }
+    def __init__(self):
+        self.payload = {}
+        self.token = {}
 
-    def __init__(self, payload):
+    def generate(self, payload):
+        self.payload['exp'] = datetime.datetime.utcnow() + datetime.timedelta(seconds=10 * 60)
         encoded_jwt = jwt.encode(payload={**payload, **self.payload}, key=settings.SECRET_KEY, algorithm='HS256', headers=self.headers).decode('utf8')
         de_code = jwt.decode(encoded_jwt, settings.SECRET_KEY, algorithms=['HS256'])
-        # print(encoded_jwt)
         if settings.DEBUG:
+            # print(encoded_jwt)
             print(de_code)
         self.token = {'token': encoded_jwt}
 
