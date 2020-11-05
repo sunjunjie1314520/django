@@ -77,7 +77,8 @@ class LoginView(APIView):
             if not serializer.is_valid():
                 return SerializerErrorResponse(serializer)
 
-            serializer.save()
+            obj = serializer.save()
+            models.UsersData.objects.create(users=obj)
 
             # 删除验证码
             conn = get_redis_connection()
