@@ -21,7 +21,8 @@ class SubmitSerializer(serializers.ModelSerializer):
 class SubmitView(APIView):
     def post(self, request, *args, **kwargs):
 
-        print(request.data)
+        return ErrorResponse(msg='系统维护中')
+
         serializer = SubmitSerializer(data=request.data)
 
         if not serializer.is_valid():
