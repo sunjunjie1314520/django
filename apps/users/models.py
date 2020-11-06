@@ -30,7 +30,7 @@ class Users(models.Model):
         verbose_name_plural = '普通用户'
     
     def __str__(self):
-        return '{}, {}'.format(self.phone, self.password)
+        return self.phone
 
 
 class UsersData(models.Model):
