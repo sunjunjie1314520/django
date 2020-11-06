@@ -8,9 +8,7 @@ migrate = False
 
 if len(sys.argv) > 1:
     migrate = True
-
-print(migrate)
-print(type(migrate))
+    print('同步数据库')
 
 time = datetime.now().strftime('%Y/%m/%d-%H:%M:%S')
 
@@ -24,7 +22,7 @@ try:
     data = {
         'id': 3,
         'is_update': True,
-        'is_migrate': True,
+        'is_migrate': migrate,
     }
     res = requests.post(baseURL + 'set_sync', data=data)
     if res.status_code == 201:
