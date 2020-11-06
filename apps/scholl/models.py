@@ -42,7 +42,6 @@ class Info(models.Model):
     class Meta:
         verbose_name = "备案记录"
         verbose_name_plural = "备案记录"
-        ordering = ['-id']
 
     def __str__(self):
         return '{0}-{1}'.format(self.beian, self.xm)
