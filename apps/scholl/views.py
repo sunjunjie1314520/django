@@ -32,7 +32,7 @@ class SubmitView(APIView):
 
         ud = UsersData.objects.filter(users=auth.get_object()).first()
 
-        if ud.money < 10:
+        if ud.money < 1:
             return ErrorResponse(msg='余额不足')
 
         serializer = SubmitSerializer(data=request.data)
@@ -55,7 +55,7 @@ class SubmitView(APIView):
 
         models.Examine.objects.create(name=examine_name, opinion=examine_opinion, info=info, create_time=new_time)
 
-        ud.money = F('money') - 10
+        ud.money = F('money') - 1
         ud.save()
 
         return SuccessResponse(msg='提交成功', data=serializer.data)
