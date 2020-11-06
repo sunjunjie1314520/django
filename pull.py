@@ -14,7 +14,7 @@ def task():
             print(json.dumps(r.json(), sort_keys=True, indent=2, ensure_ascii=False))
             if r.json()['is_update']:
                 os.system('git reset --hard')
-                os.system('m2.bat')
+                os.system('python manage.py migrate')
                 os.system('git pull')
                 data = {
                     'id': 3,
