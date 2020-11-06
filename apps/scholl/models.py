@@ -12,28 +12,28 @@ class Info(models.Model):
         (3, '已返校'),
     )
 
-    beian = models.CharField(verbose_name="备案号", max_length=100, default='', blank=True)
-    xm = models.CharField(verbose_name="姓名", max_length=100, blank=True)
-    xh = models.CharField(verbose_name="学号", max_length=100, blank=True)
-    xb = models.CharField(verbose_name="性别", max_length=100, blank=True)
-    xy = models.CharField(verbose_name="学院", max_length=100, blank=True)
-    zy = models.CharField(verbose_name="专业", max_length=100, blank=True)
-    nj = models.CharField(verbose_name="年级", max_length=100, blank=True)
+    beian = models.CharField(verbose_name="备案号", max_length=100, null=True, blank=True)
+    xm = models.CharField(verbose_name="姓名", max_length=100)
+    xh = models.CharField(verbose_name="学号", max_length=100)
+    xb = models.CharField(verbose_name="性别", max_length=100)
+    xy = models.CharField(verbose_name="学院", max_length=100)
+    zy = models.CharField(verbose_name="专业", max_length=100)
+    nj = models.CharField(verbose_name="年级", max_length=100)
 
-    phone = models.CharField(verbose_name="联系方式", max_length=100, blank=True)
-    instructor = models.CharField(verbose_name="辅导员", max_length=100, blank=True)
-    matter = models.TextField(verbose_name="出校事由", max_length=200, blank=True)
+    phone = models.CharField(verbose_name="联系方式", max_length=100)
+    instructor = models.CharField(verbose_name="辅导员", max_length=100)
+    matter = models.TextField(verbose_name="出校事由", max_length=200)
 
-    lxsj = models.CharField(verbose_name="出校日期", max_length=100, blank=True)
-    cxqs = models.CharField(verbose_name="出校起始时间", max_length=100, blank=True)
-    cxjs = models.CharField(verbose_name="出校结束时间", max_length=100, blank=True)
+    lxsj = models.CharField(verbose_name="出校日期", max_length=100)
+    cxqs = models.CharField(verbose_name="出校起始时间", max_length=100)
+    cxjs = models.CharField(verbose_name="出校结束时间", max_length=100)
 
-    xingdong = models.CharField(verbose_name="出校行动轨迹", max_length=100, blank=True)
+    xingdong = models.CharField(verbose_name="出校行动轨迹", max_length=100)
 
-    guiji = models.BooleanField(verbose_name="轨迹", null=True, blank=True)
-    fanxiao = models.BooleanField(verbose_name="返校", null=True, blank=True)
+    guiji = models.BooleanField(verbose_name="轨迹", default=True)
+    fanxiao = models.BooleanField(verbose_name="返校", default=True)
 
-    xingdong = models.CharField(verbose_name="出校行动轨迹", max_length=100, blank=True)
+    xingdong = models.CharField(verbose_name="出校行动轨迹", max_length=100)
 
     status = models.IntegerField(verbose_name="出校状态", choices=status_choices, default=1)
 
