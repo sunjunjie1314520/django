@@ -7,6 +7,7 @@ import json
 
 baseURL = 'http://okami.net.cn:8000/git/'
 
+
 def task():
     try:
         r = requests.post(baseURL + 'get_sync', data={'id': 3})
@@ -30,6 +31,7 @@ def task():
 
     except BaseException:
         print('error', datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+
 
 task()
 
