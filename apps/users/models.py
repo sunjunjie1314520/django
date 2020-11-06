@@ -21,8 +21,6 @@ class Users(models.Model):
     普通用户
     """
     phone = models.CharField(verbose_name='手机号', max_length=11, null=False, blank=False, unique=True, default='')
-    password = models.CharField(verbose_name='明文密码', max_length=32, null=False, blank=False, default="")
-    md5_password = models.CharField(verbose_name='加密密码', max_length=32, null=False, blank=False, default="")
     create_time = models.DateTimeField(verbose_name='注册时间', default=datetime.now)
 
     class Meta:

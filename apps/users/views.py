@@ -147,7 +147,6 @@ class RegisterSerializer(serializers.ModelSerializer):
 class RegisterView(APIView):
 
     def post(self, request, *args, **kwargs):
-        print(request.data)
 
         serializer = RegisterSerializer(data=request.data)
         if not serializer.is_valid():
@@ -179,10 +178,7 @@ class PersonalViewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Users
-        # fields = ['name', 'phone']
         fields = '__all__'
-        # exclude = ['md5_password', 'password']
-
 
 class PersonalView(APIView):
 
@@ -193,6 +189,9 @@ class PersonalView(APIView):
 
         serializer = PersonalViewSerializer(instance=auth.get_object())
         return SuccessResponse(msg='个人资料', data=serializer.data)
+
+
+################### 修改资料 #####################
 
 class ModifyUserDataViewSerializer(serializers.ModelSerializer):
     create_time = serializers.DateTimeField(format='%Y-%m-%d %H:%M:%S', read_only=True)

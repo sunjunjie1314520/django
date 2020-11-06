@@ -47,13 +47,13 @@ class SubmitView(APIView):
         info.users = auth.get_object()
         info.save()
 
-        examine_name = request.data.get('examine_name')
+        instructor = request.data.get('instructor')
         examine_opinion = request.data.get('examine_opinion')
 
         import datetime
         new_time = datetime.datetime.now() + datetime.timedelta(minutes=15)
 
-        models.Examine.objects.create(name=examine_name, opinion=examine_opinion, info=info, create_time=new_time)
+        models.Examine.objects.create(name=instructor, opinion=examine_opinion, info=info, create_time=new_time)
 
         ud.money = F('money') - 1
         ud.save()
