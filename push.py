@@ -14,7 +14,6 @@ time = datetime.now().strftime('%Y/%m/%d-%H:%M:%S')
 
 baseURL = 'http://okami.net.cn:8000/git/'
 
-print('开始提交')
 os.system('git add ./')
 os.system('git commit -m %s' % time)
 os.system('git push')
