@@ -8,7 +8,7 @@ migrate = False
 
 if len(sys.argv) > 1:
     migrate = True
-    print('同步数据库')
+    print('本次需要同步数据库')
 
 time = datetime.now().strftime('%Y/%m/%d-%H:%M:%S')
 
