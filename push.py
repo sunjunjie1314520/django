@@ -17,8 +17,8 @@ try:
         'is_migrate': True,
     }
     res = requests.post('http://okami.net.cn:8000/git/set_sync', data=data)
-    if res.status_code == 200:
-        print(res.text)
+    if res.status_code == 201:
+        print(json.dumps(res.json(), sort_keys=True, indent=2, ensure_ascii=False))
         print('已完成提交到GIT => %s' % time)
 
 except BaseException:
