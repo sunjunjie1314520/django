@@ -22,16 +22,18 @@ def task():
                 if res.status_code == 200:
                     print(json.dumps(res.json(), sort_keys=True, indent=2, ensure_ascii=False))
 
-                os.system('git reset --hard')
-                os.system('git pull')
+                    os.system('git reset --hard')
+                    os.system('git pull')
 
             if r.json()['is_migrate']:
                 data = {
                     'id': 3,
                     'is_migrate': False,
                 }
-                requests.post(baseURL + 'set_sync', data=data)
-                os.system('python manage.py migrate')
+                res = requests.post(baseURL + 'set_sync', data=data)
+                if res.status_code == 200:
+                    print(json.dumps(res.json(), sort_keys=True, indent=2, ensure_ascii=False))
+                    os.system('python manage.py migrate')
 
         else:
             print(r.status_code)
