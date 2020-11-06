@@ -2,7 +2,9 @@ import os
 import requests
 from datetime import datetime
 import json
-from threading import Thread
+import sys
+
+print(sys.argv)
 
 time = datetime.now().strftime('%Y/%m/%d-%H:%M:%S')
 
