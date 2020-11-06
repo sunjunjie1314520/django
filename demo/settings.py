@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'example.apps.ExampleConfig',
     'applets.apps.AppletsConfig',
     'scholl.apps.SchollConfig',
+    'upload.apps.UploadConfig',
 ]
 
 MIDDLEWARE = [
@@ -191,6 +192,8 @@ CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_HEADERS = list(default_headers) + [
     'token',
 ]
+
+HTTP_URL = 'http://192.168.1.5:80'
 
 try:
     from .local_settings import *

@@ -13,4 +13,5 @@ urlpatterns = [
     path('/example', include('example.urls')),
     path('/applets', include('applets.urls')),
     path('/scholl', include('scholl.urls')),
+    path('/upload', include('upload.urls')),
 ]

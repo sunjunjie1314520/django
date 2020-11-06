@@ -87,7 +87,7 @@ class LoginView(APIView):
             token = GenerateToken()
             token.generate(serializer.data)
 
-            return SuccessResponse(msg='注册成功', data=token.get_token())
+            return SuccessResponse(msg='欢迎使用', data=token.get_token())
 
         serializer = LoginSerializer(instance=query)
 
@@ -215,3 +215,4 @@ class ModifyUserDataView(APIView):
             return SerializerErrorResponse(serializer)
         serializer.save()
         return SuccessResponse(msg='修改成功', data=serializer.data)
+

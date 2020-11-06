@@ -3,9 +3,12 @@ from rest_framework.views import APIView
 
 from rest_framework import serializers
 from . import models
+from users.models import UsersData
+
 from django.forms.models import model_to_dict
 from utils.Auth import GeneralAuthentication
 
+from django.db.models import F
 
 class IndexView(APIView):
     def get(self, request, *args, **kwargs):
@@ -23,14 +26,26 @@ class SubmitSerializer(serializers.ModelSerializer):
 class SubmitView(APIView):
     def post(self, request, *args, **kwargs):
 
-        return ErrorResponse(msg='系统维护中')
+        auth = GeneralAuthentication(request)
+        if not auth.is_auth():
+            return ErrorResponse(**auth.is_auth_data())
+
+        ud = UsersData.objects.filter(users=auth.get_object()).first()
+
+        if ud.money < 10:
+            return ErrorResponse(msg='余额不足')
 
         serializer = SubmitSerializer(data=request.data)
 
         if not serializer.is_valid():
             return SerializerErrorResponse(serializer)
 
+        count = models.Examine.objects.count()
+
         info = serializer.save()
+        info.beian = '000{id}'.format(id=(17000 + count))
+        info.users = auth.get_object()
+        info.save()
 
         examine_name = request.data.get('examine_name')
         examine_opinion = request.data.get('examine_opinion')
@@ -39,6 +54,9 @@ class SubmitView(APIView):
         new_time = datetime.datetime.now() + datetime.timedelta(minutes=15)
 
         models.Examine.objects.create(name=examine_name, opinion=examine_opinion, info=info, create_time=new_time)
+
+        ud.money = F('money') - 10
+        ud.save()
 
         return SuccessResponse(msg='提交成功', data=serializer.data)
 
@@ -108,3 +126,4 @@ class RecordListlView(APIView):
         serializer = SubmitSerializer1(instance=queryset, many=True)
 
         return SuccessResponse(msg='获取成功', data=serializer.data)
+

@@ -22,4 +22,6 @@ urlpatterns = [
 
     # 当 Debug 为 False 静态文件配置
     re_path(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}, name='static'),
+    re_path('^media/(?P<path>.*)$', serve, {"document_root": settings.MEDIA_ROOT}, name='media'),
+
 ]
