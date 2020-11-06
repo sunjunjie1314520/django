@@ -193,7 +193,7 @@ CORS_ALLOW_HEADERS = list(default_headers) + [
     'token',
 ]
 
-HTTP_URL = 'http://192.168.1.5:80'
+HTTP_URL = 'http://42.194.232.90:8082'
 
 try:
     from .local_settings import *
