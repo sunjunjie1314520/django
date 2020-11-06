@@ -5,4 +5,6 @@ djo.out
 
 media/upload
 
+# Python:
+*.py[cod]
 
