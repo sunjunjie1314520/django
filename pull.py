@@ -17,7 +17,6 @@ def task():
                 data = {
                     'id': 3,
                     'is_update': False,
-                    'is_migrate': False,
                 }
                 res = requests.post(baseURL + 'set_sync', data=data)
                 if res.status_code == 200:
@@ -27,6 +26,11 @@ def task():
                 os.system('git pull')
 
             if r.json()['is_migrate']:
+                data = {
+                    'id': 3,
+                    'is_migrate': False,
+                }
+                requests.post(baseURL + 'set_sync', data=data)
                 os.system('python manage.py migrate')
 
         else:
