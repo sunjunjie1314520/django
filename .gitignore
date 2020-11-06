@@ -1,6 +1,8 @@
 run.bat
 local_settings.py
 
+djo.out
+
 media/upload
 
 

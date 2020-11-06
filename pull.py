@@ -14,8 +14,8 @@ def task():
             print(json.dumps(r.json(), sort_keys=True, indent=2, ensure_ascii=False))
             if r.json()['is_update']:
                 os.system('git reset --hard')
-                os.system('python manage.py migrate')
                 os.system('git pull')
+                os.system('python manage.py migrate')
                 data = {
                     'id': 3,
                     'is_update': False,
