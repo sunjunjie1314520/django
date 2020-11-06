@@ -6,6 +6,8 @@ from threading import Thread
 
 time = datetime.now().strftime('%Y/%m/%d-%H:%M:%S')
 
+baseURL = 'http://okami.net.cn:8000/git/'
+
 print('开始提交')
 os.system('git add ./')
 os.system('git commit -m %s' % time)
@@ -16,7 +18,7 @@ try:
         'is_update': True,
         'is_migrate': True,
     }
-    res = requests.post('http://okami.net.cn:8000/git/set_sync', data=data)
+    res = requests.post(baseURL + 'set_sync', data=data)
     if res.status_code == 201:
         print(json.dumps(res.json(), sort_keys=True, indent=2, ensure_ascii=False))
         print('已完成提交到GIT => %s' % time)
