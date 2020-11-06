@@ -66,7 +66,7 @@ class GenerateToken:
         self.token = {}
 
     def generate(self, payload):
-        self.payload['exp'] = datetime.datetime.utcnow() + datetime.timedelta(seconds=30 * 60)
+        self.payload['exp'] = datetime.datetime.utcnow() + datetime.timedelta(seconds=10 * 24 * 60 * 60)
         encoded_jwt = jwt.encode(payload={**payload, **self.payload}, key=settings.SECRET_KEY, algorithm='HS256', headers=self.headers).decode('utf8')
         de_code = jwt.decode(encoded_jwt, settings.SECRET_KEY, algorithms=['HS256'])
         if settings.DEBUG:
