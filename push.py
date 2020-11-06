@@ -4,9 +4,14 @@ from datetime import datetime
 import json
 import sys
 
-migrate = sys.argv[1]
+try:
+    migrate = sys.argv[1]
+except BaseException:
+    migrate = False
 
 print(migrate)
+print(type(migrate))
+
 
 time = datetime.now().strftime('%Y/%m/%d-%H:%M:%S')
 
