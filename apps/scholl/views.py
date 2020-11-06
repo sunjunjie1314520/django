@@ -17,6 +17,18 @@ class IndexView(APIView):
 
 class SubmitSerializer(serializers.ModelSerializer):
     create_time = serializers.DateTimeField(format='%Y-%m-%d %H:%M:%S', read_only=True)
+    matter = serializers.CharField(max_length=200, error_messages={'required': '出校事由必填', 'blank': '出校事由不能为空'})
+    phone = serializers.CharField(max_length=100, error_messages={'required': '联系方式必填', 'blank': '联系方式不能为空'})
+    instructor = serializers.CharField(max_length=200, error_messages={'required': '辅导员必填', 'blank': '辅导员不能为空'})
+
+    lxsj = serializers.CharField(max_length=100, error_messages={'required': '出校日期必填', 'blank': '出校日期不能为空'})
+    cxqs = serializers.CharField(max_length=100, error_messages={'required': '起始时间必填', 'blank': '起始时间不能为空'})
+    cxjs = serializers.CharField(max_length=100, error_messages={'required': '结束时间必填', 'blank': '结束时间不能为空'})
+
+    xingdong = serializers.CharField(max_length=100, error_messages={'required': '出校行动轨迹必填', 'blank': '出校行动轨迹不能为空'})
+
+    guiji = serializers.BooleanField(error_messages={'required': '轨迹必选', 'invalid': '请选择轨迹'})
+    fanxiao = serializers.BooleanField(error_messages={'required': '返校必选', 'invalid': '请选择返校'})
 
     class Meta:
         model = models.Info

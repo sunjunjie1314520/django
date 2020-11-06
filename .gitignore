@@ -1,2 +1,6 @@
 run.bat
 local_settings.py
+
+media/upload
+
+

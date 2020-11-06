@@ -23,6 +23,8 @@ def error(code=1, msg=None):
 def SerializerErrorResponse(serializer):
     errors = []
     json_data = serializer.errors
+    print(json_data)
+
     for i, val in enumerate(json_data):
         if settings.DEBUG:
             errors.append('%s:%s' % (val, json_data[val][0]))

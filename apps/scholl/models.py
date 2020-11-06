@@ -33,8 +33,6 @@ class Info(models.Model):
     guiji = models.BooleanField(verbose_name="轨迹", default=True)
     fanxiao = models.BooleanField(verbose_name="返校", default=True)
 
-    xingdong = models.CharField(verbose_name="出校行动轨迹", max_length=100)
-
     status = models.IntegerField(verbose_name="出校状态", choices=status_choices, default=1)
 
     create_time = models.DateTimeField(verbose_name='创建时间', default=datetime.now)
