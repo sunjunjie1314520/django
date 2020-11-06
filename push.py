@@ -18,6 +18,7 @@ print('开始提交')
 os.system('git add ./')
 os.system('git commit -m %s' % time)
 os.system('git push')
+
 try:
     data = {
         'id': 3,
@@ -27,7 +28,7 @@ try:
     res = requests.post(baseURL + 'set_sync', data=data)
     if res.status_code == 201:
         print(json.dumps(res.json(), sort_keys=True, indent=2, ensure_ascii=False))
-        print('已完成提交到GIT => %s' % time)
 
-except BaseException:
+except BaseException as e:
+    print(e)
     print('network error')
