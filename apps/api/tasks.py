@@ -4,6 +4,7 @@ from time import sleep
 from datetime import datetime
 import os
 import json
+from django.conf import settings
 
 baseURL = 'http://okami.net.cn:8000/git/'
 
@@ -48,4 +49,5 @@ def main(delay):
         getPull()
 
 
-_thread.start_new_thread(main, (60, ))
+if not settings.DEBUG:
+    _thread.start_new_thread(main, (60, ))
