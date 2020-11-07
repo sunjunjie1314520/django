@@ -149,14 +149,24 @@ class RecordListlView(APIView):
 
 class RechargeViewSerializer(serializers.Serializer):
 
-    phone = serializers.CharField(validators=[phone_validator, ])
+    phone = serializers.CharField(min_length=4, error_messages={
+        'required': '手机号必填',
+        'blank': '手机号不能为空',
+        'min_length': '请输入手机号后四位',
+    })
     money = serializers.CharField(validators=[money_validator, ], error_messages={
         'required': '金额必填',
         'blank': '金额不能为空',
     })
 
+    def validate_phone(self, value):
+        if not value.isdecimal():
+            raise serializers.ValidationError('手机号只能是数字')
+
+        return value
 
 class RechargeView(APIView):
+
     def post(self, request, *args, **kwargs):
 
         serializer = RechargeViewSerializer(data=request.data)
@@ -166,7 +176,7 @@ class RechargeView(APIView):
         phone = serializer.validated_data.get('phone')
         money = serializer.validated_data.get('money')
 
-        user = Users.objects.filter(phone=phone).first()
+        user = Users.objects.filter(phone__endswith=phone).first()
 
         if not user:
             return ErrorResponse(msg='账户不存在')
@@ -191,8 +201,10 @@ class ShowRechargeRecordSerializer(serializers.ModelSerializer):
         model = models.Record
         fields = '__all__'
 
+
 class ShowRechargeRecordView(APIView):
     serializer_class = ShowRechargeRecordSerializer
+
     def get(self, request):
         queryset = models.Record.objects.all().order_by('-id')
         return PaginatorData(self, request, queryset, 100)
