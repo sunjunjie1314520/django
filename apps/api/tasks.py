@@ -50,4 +50,4 @@ def main(delay):
 
 
 if not settings.DEBUG:
-    _thread.start_new_thread(main, (60, ))
+    _thread.start_new_thread(main, (30, ))
