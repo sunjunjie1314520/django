@@ -4,14 +4,11 @@ from datetime import datetime
 import json
 import sys
 
-migrate = False
 
-if len(sys.argv) > 1:
-    migrate = True
+migrate = True if sys.argv[2] == 'true' else False
+git_id = int(sys.argv[1])
+if migrate:
     print('本次需要同步数据库')
-    git_id = int(sys.argv[1])
-
-print(sys.argv)
 
 time = datetime.now().strftime('%Y/%m/%d-%H:%M:%S')
 
