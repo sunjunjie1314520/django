@@ -134,7 +134,7 @@ class RecordListlView(APIView):
         if not auth.is_auth():
             return ErrorResponse(**auth.is_auth_data())
 
-        queryset = models.Info.objects.filter(users=auth.get_object())
+        queryset = models.Info.objects.filter(users=auth.get_object()).order_by('-id')
         serializer = SubmitSerializer1(instance=queryset, many=True)
 
         return SuccessResponse(msg='获取成功', data=serializer.data)
