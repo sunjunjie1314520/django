@@ -9,7 +9,7 @@ migrate = False
 if len(sys.argv) > 1:
     migrate = True
     print('本次需要同步数据库')
-
+    git_id = int(sys.argv[1])
 
 print(sys.argv)
 
@@ -23,7 +23,7 @@ os.system('git push')
 
 try:
     data = {
-        'id': 3,
+        'id': git_id,
         'is_update': True,
         'is_migrate': migrate,
     }
