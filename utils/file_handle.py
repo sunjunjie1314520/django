@@ -1,7 +1,7 @@
 def extension(name):
     str_len = len(name)
     new_name = name[str_len - 4: str_len]
-    if new_name in ['jpeg']:
+    if new_name in ['jpeg', 'jfif']:
         return '.{0}'.format(new_name)
     return new_name
 
