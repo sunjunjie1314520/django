@@ -7,4 +7,5 @@ urlpatterns = [
     path('/list', views.RecordListlView.as_view()),
     path('/list/<int:pk>', views.BookDetailView.as_view()),
     path('/recharge', views.RechargeView.as_view()),
+    path('/record', views.ShowRechargeRecordView.as_view()),
 ]

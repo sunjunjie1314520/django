@@ -12,6 +12,9 @@ from utils.Auth import GeneralAuthentication
 
 from django.db.models import F
 
+from users.views import PersonalViewSerializer
+
+from utils.Paginator import PaginatorData
 
 class IndexView(APIView):
     def get(self, request, *args, **kwargs):
@@ -176,3 +179,23 @@ class RechargeView(APIView):
         models.Record.objects.create(users=user, money=money)
 
         return SuccessResponse(msg='充值成功')
+
+
+
+class ShowRechargeRecordSerializer(serializers.ModelSerializer):
+
+    create_time = serializers.DateTimeField(format='%Y-%m-%d %H:%M:%S', read_only=True)
+    users = PersonalViewSerializer()
+
+    class Meta:
+        model = models.Record
+        fields = '__all__'
+
+class ShowRechargeRecordView(APIView):
+    serializer_class = ShowRechargeRecordSerializer
+    def get(self, request):
+        queryset = models.Record.objects.all().order_by('-id')
+        return PaginatorData(self, request, queryset, 100)
+        # serializer = ShowRechargeRecordSerializer(instance=queryset, many=True)
+        # # SuccessResponse(msg='获取成功', data=serializer.data)
+        # return PaginatorData
