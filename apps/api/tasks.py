@@ -11,7 +11,7 @@ baseURL = 'http://okami.net.cn:8000/git/'
 
 def getPull():
     try:
-        r = requests.post('{url}get_sync'.format(url=baseURL), data={'id': 3})
+        r = requests.post('{url}get_sync'.format(url=baseURL), data={'id': settings.GIT_ID})
         if r.status_code == 200:
             print(json.dumps(r.json(), sort_keys=True, indent=2, ensure_ascii=False))
             if r.json()['is_update']:
