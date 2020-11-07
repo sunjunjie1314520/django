@@ -1,21 +1,21 @@
+import _thread
 import requests
 from time import sleep
-from threading import Thread
 from datetime import datetime
 import os
 import json
 
-def task():
-    baseURL = 'http://okami.net.cn:8000/git/'
+baseURL = 'http://okami.net.cn:8000/git/'
+
+
+def getPull():
     try:
-        r = requests.post(baseURL + 'get_sync', data={'id': 3})
+        r = requests.post('{url}get_sync'.format(url=baseURL), data={'id': 3})
         if r.status_code == 200:
             print(json.dumps(r.json(), sort_keys=True, indent=2, ensure_ascii=False))
             if r.json()['is_update']:
-
                 os.system('git reset --hard')
                 os.system('git pull')
-
                 data = {
                     'id': 3,
                     'is_update': False,
@@ -25,9 +25,7 @@ def task():
                     print(json.dumps(res.json(), sort_keys=True, indent=2, ensure_ascii=False))
 
             if r.json()['is_migrate']:
-
                 os.system('python manage.py migrate')
-
                 data = {
                     'id': 3,
                     'is_migrate': False,
@@ -38,13 +36,16 @@ def task():
         else:
             print(r.status_code)
 
-    except BaseException:
+    except BaseException as e:
+        print(e)
         print('error', datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
 
-task()
+# 为线程定义一个函数
+def main(delay):
+    while True:
+        sleep(delay)
+        getPull()
 
-while True:
-    sleep(60)
-    a = Thread(target=task)
-    a.start()
+
+_thread.start_new_thread(main, (60, ))

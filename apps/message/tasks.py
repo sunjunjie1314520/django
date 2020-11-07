@@ -1,8 +1,6 @@
 
 from celery import shared_task
-
 from . import models
-
 import _thread
 import time
 
@@ -15,7 +13,7 @@ def print_time(threadName, delay):
         time.sleep(delay)
         query()
 
-# _thread.start_new_thread(print_time, ("Thread-1", 10))
+# _thread.start_new_thread(print_time, ("Thread-1", 3))
 
 @shared_task()
 def add(x, y):

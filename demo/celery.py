@@ -6,18 +6,11 @@ from celery import Celery
 from celery.schedules import crontab
 from django.conf import settings
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'demo.settings') # 设置django环境
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'demo.settings')  # 设置django环境
 
 app = Celery('demo')
 
-app.config_from_object('django.conf:settings', namespace='CELERY') #  使用CELERY_ 作为前缀，在settings中写配置
+app.config_from_object('django.conf:settings', namespace='CELERY')  # 使用CELERY_ 作为前缀，在settings中写配置
 
-app.autodiscover_tasks(lambda: settings.INSTALLED_APPS) # 发现任务文件每个app下的task.py
+app.autodiscover_tasks()  # 发现任务文件每个app下的task.py
 
-app.conf.beat_schedule = {
-    '5 minutes': {
-        'task': 'message.tasks.add',
-        'schedule': 3,
-        'args': (2, 4)
-    },
-}

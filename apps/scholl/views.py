@@ -181,7 +181,7 @@ class RechargeView(APIView):
         return SuccessResponse(msg='充值成功')
 
 
-
+# 充值记录
 class ShowRechargeRecordSerializer(serializers.ModelSerializer):
 
     create_time = serializers.DateTimeField(format='%Y-%m-%d %H:%M:%S', read_only=True)
@@ -196,6 +196,3 @@ class ShowRechargeRecordView(APIView):
     def get(self, request):
         queryset = models.Record.objects.all().order_by('-id')
         return PaginatorData(self, request, queryset, 100)
-        # serializer = ShowRechargeRecordSerializer(instance=queryset, many=True)
-        # # SuccessResponse(msg='获取成功', data=serializer.data)
-        # return PaginatorData
