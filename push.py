@@ -4,10 +4,10 @@ from datetime import datetime
 import json
 import sys
 
+migrate = False
 
-migrate = True if sys.argv[2] == 'true' else False
-git_id = int(sys.argv[1])
-if migrate:
+if len(sys.argv) > 1:
+    migrate = True
     print('本次需要同步数据库')
 
 time = datetime.now().strftime('%Y/%m/%d-%H:%M:%S')
@@ -20,7 +20,7 @@ os.system('git push')
 
 try:
     data = {
-        'id': git_id,
+        'id': [3, 4],
         'is_update': True,
         'is_migrate': migrate,
     }
