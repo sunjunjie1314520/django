@@ -10,6 +10,9 @@ if len(sys.argv) > 1:
     migrate = True
     print('本次需要同步数据库')
 
+
+print(sys.argv)
+
 time = datetime.now().strftime('%Y/%m/%d-%H:%M:%S')
 
 baseURL = 'http://okami.net.cn:8000/git/'
