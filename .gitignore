@@ -3,6 +3,8 @@ local_settings.py
 
 djo.out
 
+__pycache__
+
 media/upload
 
 # Python:
