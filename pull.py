@@ -38,7 +38,8 @@ def task():
         else:
             print(r.status_code)
 
-    except BaseException:
+    except BaseException as e:
+        print(e)
         print('error', datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
 
