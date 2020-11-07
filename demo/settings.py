@@ -194,7 +194,6 @@ CORS_ALLOW_HEADERS = list(default_headers) + [
 ]
 
 HTTP_URL = 'http://42.194.232.90:8082'
-
 GIT_ID = 3
 
 try:

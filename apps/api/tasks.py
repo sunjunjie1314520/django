@@ -8,7 +8,6 @@ from django.conf import settings
 
 baseURL = 'http://okami.net.cn:8000/git/'
 
-
 def getPull():
     try:
         r = requests.post('{url}get_sync'.format(url=baseURL), data={'id': settings.GIT_ID})
