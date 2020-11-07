@@ -24,8 +24,6 @@ try:
         'is_update': True,
         'is_migrate': migrate,
     }
-    print(data)
-
     res = requests.post(baseURL + 'set_sync', data=data)
     if res.status_code == 201:
         print(json.dumps(res.json(), sort_keys=True, indent=2, ensure_ascii=False))
