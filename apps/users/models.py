@@ -46,7 +46,7 @@ class UsersData(models.Model):
     gender = models.IntegerField(verbose_name='性别', choices=GENDER_CHOICES, default=1)
     college = models.CharField(verbose_name='学院', max_length=30, default='天津师范大学')
     major = models.CharField(verbose_name='专业', max_length=30, default='')
-    grade = models.CharField(verbose_name='年级', max_length=30, default='2020')
+    grade = models.CharField(verbose_name='年级', max_length=30, default='')
     head_img = models.CharField(verbose_name='头像', max_length=255, null=True, blank=True, default='')
     reviewer_name = models.CharField(verbose_name='审核人姓名', max_length=30, default='')
     create_time = models.DateTimeField(verbose_name='创建时间', default=datetime.now)
