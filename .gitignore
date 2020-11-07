@@ -1,11 +1,11 @@
-run.bat
+#文件
+run1.bat
+djo.out
 local_settings.py
 
-djo.out
-
-__pycache__
-
+#文件夹
 .idea
+__pycache__
 media/upload
 
 # Python:
