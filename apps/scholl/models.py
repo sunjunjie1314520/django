@@ -18,7 +18,7 @@ class Info(models.Model):
     xb = models.CharField(verbose_name="性别", max_length=100)
     xy = models.CharField(verbose_name="学院", max_length=100)
     zy = models.CharField(verbose_name="专业", max_length=100)
-    nj = models.CharField(verbose_name="年级", max_length=100, default='')
+    nj = models.CharField(verbose_name="年级", max_length=100, null=True)
 
     phone = models.CharField(verbose_name="联系方式", max_length=100)
     instructor = models.CharField(verbose_name="辅导员", max_length=100)
