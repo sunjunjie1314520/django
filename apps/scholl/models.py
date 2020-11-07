@@ -60,3 +60,19 @@ class Examine(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Record(models.Model):
+    """
+    充值表
+    """
+    users = models.ForeignKey(verbose_name='用户', to=Users, on_delete=models.CASCADE, null=True, blank=True)
+    money = models.FloatField(verbose_name='充值金额')
+    create_time = models.DateTimeField(verbose_name='充值时间', default=datetime.now)
+
+    class Meta:
+        verbose_name = "充值记录"
+        verbose_name_plural = "充值记录"
+
+    def __str__(self):
+        return self.users.phone

@@ -9,6 +9,15 @@ def phone_validator(value):
     if not re.match(reg, value):
         raise ValidationError('请正确填写11位手机号码')
 
+def money_validator(value):
+    """
+    余额
+    """
+    if not value.isdecimal():
+        raise ValidationError('金额只能为数字')
+    if float(value) < 1:
+        raise ValidationError('金额不能小于1')
+
 def name_validator(value):
     """
     姓名
@@ -24,3 +33,4 @@ def url_validator(value):
     reg = r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+"
     if not re.match(reg, value):
         raise ValidationError('URL地址格式不正确')
+

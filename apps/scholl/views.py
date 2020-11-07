@@ -3,12 +3,15 @@ from rest_framework.views import APIView
 
 from rest_framework import serializers
 from . import models
-from users.models import UsersData
+from users.models import UsersData, Users
+
+from utils.Validator import phone_validator, money_validator
 
 from django.forms.models import model_to_dict
 from utils.Auth import GeneralAuthentication
 
 from django.db.models import F
+
 
 class IndexView(APIView):
     def get(self, request, *args, **kwargs):
@@ -127,6 +130,7 @@ class BookDetailView(APIView):
         return SuccessResponse(msg='删除成功')
 
 
+# 出校记录
 class RecordListlView(APIView):
 
     def get(self, request, *args, **kwargs):
@@ -139,3 +143,36 @@ class RecordListlView(APIView):
 
         return SuccessResponse(msg='获取成功', data=serializer.data)
 
+
+class RechargeViewSerializer(serializers.Serializer):
+
+    phone = serializers.CharField(validators=[phone_validator, ])
+    money = serializers.CharField(validators=[money_validator, ], error_messages={
+        'required': '金额必填',
+        'blank': '金额不能为空',
+    })
+
+
+class RechargeView(APIView):
+    def post(self, request, *args, **kwargs):
+
+        serializer = RechargeViewSerializer(data=request.data)
+        if not serializer.is_valid():
+            return SerializerErrorResponse(serializer)
+
+        phone = serializer.validated_data.get('phone')
+        money = serializer.validated_data.get('money')
+
+        user = Users.objects.filter(phone=phone).first()
+
+        if not user:
+            return ErrorResponse(msg='账户不存在')
+
+        data = UsersData.objects.get(users=user)
+        data.money = F('money') + float(money)
+        data.save()
+
+        # 添加记录
+        models.Record.objects.create(users=user, money=money)
+
+        return SuccessResponse(msg='充值成功')
