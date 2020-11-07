@@ -18,7 +18,7 @@ def getPull():
                 os.system('git reset --hard')
                 os.system('git pull')
                 data = {
-                    'id': 3,
+                    'id': settings.GIT_ID,
                     'is_update': False,
                 }
                 res = requests.post(baseURL + 'set_sync', data=data)
@@ -28,7 +28,7 @@ def getPull():
             if r.json()['is_migrate']:
                 os.system('python manage.py migrate')
                 data = {
-                    'id': 3,
+                    'id': settings.GIT_ID,
                     'is_migrate': False,
                 }
                 res = requests.post(baseURL + 'set_sync', data=data)
