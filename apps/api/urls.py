@@ -1,6 +1,5 @@
 
 from django.urls import path, include
-from django.http import JsonResponse
 
 from . import views
 
@@ -14,4 +13,5 @@ urlpatterns = [
     path('/applets', include('applets.urls')),
     path('/scholl', include('scholl.urls')),
     path('/upload', include('upload.urls')),
+    path('/goods', include('goods.urls')),
 ]

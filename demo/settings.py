@@ -36,8 +36,6 @@ ALLOWED_HOSTS = ['*']
 
 AUTH_USER_MODEL = 'users.UserProfile'
 
-# Application definition
-
 INSTALLED_APPS = [
     'simpleui',
     'django.contrib.admin',
@@ -58,6 +56,7 @@ INSTALLED_APPS = [
     'applets.apps.AppletsConfig',
     'scholl.apps.SchollConfig',
     'upload.apps.UploadConfig',
+    'goods.apps.GoodsConfig',
 ]
 
 MIDDLEWARE = [
@@ -136,6 +135,7 @@ USE_L10N = True
 
 USE_TZ = False
 
+# URL尾部不会自动加斜杠
 APPEND_SLASH = False
 
 # Static files (CSS, JavaScript, Images)
@@ -157,12 +157,13 @@ REST_FRAMEWORK = {
     # 'DEFAULT_PERMISSION_CLASSES': [
     #     'rest_framework.permissions.IsAdminUser',
     # ],
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10
+    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    # 'PAGE_SIZE': 10
 }
 
 REDIS_URL = '42.194.232.90'
 
+# REDIS
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
@@ -200,5 +201,3 @@ try:
     from .local_settings import *
 except ImportError:
     pass
-
-

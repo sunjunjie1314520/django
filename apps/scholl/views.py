@@ -50,8 +50,13 @@ class SubmitView(APIView):
 
         ud = UsersData.objects.filter(users=auth.get_object()).first()
 
-        if ud.money < 1:
+        if ud.money < 2:
             return ErrorResponse(msg='余额不足')
+
+        lastRecord = models.Info.objects.filter(users=auth.get_object(), status__lte=2)
+
+        if lastRecord:
+            return ErrorResponse(msg='请先结束上一次出校记录')
 
         serializer = SubmitSerializer(data=request.data)
 
@@ -73,7 +78,7 @@ class SubmitView(APIView):
 
         models.Examine.objects.create(name=instructor, opinion=examine_opinion, info=info, create_time=new_time)
 
-        ud.money = F('money') - 1
+        ud.money = F('money') - 2
         ud.save()
 
         return SuccessResponse(msg='提交成功', data=serializer.data)
@@ -102,9 +107,15 @@ class BookDetailView(APIView):
         """
         获取
         """
-        book = models.Info.objects.filter(pk=pk).first()
+        auth = GeneralAuthentication(request)
+        if not auth.is_auth():
+            return ErrorResponse(**auth.is_auth_data())
+        if pk == 0:
+            book = models.Info.objects.filter(users=auth.get_object()).order_by('-id').first()
+        else:
+            book = models.Info.objects.filter(pk=pk, users=auth.get_object()).first()
         if not book:
-            return ErrorResponse(code=2, msg='ID不存在')
+            return ErrorResponse(code=2, msg='没有记录')
         serializer = SubmitSerializer1(instance=book)
         return SuccessResponse(msg='获取成功', data=serializer.data)
 
@@ -208,3 +219,13 @@ class ShowRechargeRecordView(APIView):
     def get(self, request):
         queryset = models.Record.objects.all().order_by('-id')
         return PaginatorData(self, request, queryset, 100)
+
+
+# 配置项
+class AppConfigView(APIView):
+
+    def get(self, request):
+        data = {
+            'money': 2,
+        }
+        return SuccessResponse(msg='获取成功', data=data)

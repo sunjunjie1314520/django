@@ -10,12 +10,4 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "demo.settings")
 
 django.setup()
 
-from example import models
-
-models.Comment.objects.create(
-    news_id=1,
-    content='@吕豪:你好呀',
-    user_id=2,
-    depth=2,
-    reply_id=5
-)
+# from example import models

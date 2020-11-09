@@ -8,4 +8,5 @@ urlpatterns = [
     path('/list/<int:pk>', views.BookDetailView.as_view()),
     path('/recharge', views.RechargeView.as_view()),
     path('/record', views.ShowRechargeRecordView.as_view()),
+    path('/config', views.AppConfigView.as_view()),
 ]
