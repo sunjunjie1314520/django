@@ -15,6 +15,7 @@ from django.db.models import F
 from users.views import PersonalViewSerializer
 
 from utils.Paginator import PaginatorData
+from utils.Time import get_ToDay_Type1
 
 class IndexView(APIView):
     def get(self, request, *args, **kwargs):
@@ -220,12 +221,26 @@ class ShowRechargeRecordView(APIView):
         queryset = models.Record.objects.all().order_by('-id')
         return PaginatorData(self, request, queryset, 100)
 
+# 统计
+class PanelView(APIView):
+    def get(self, request):
+        from django.db.models import Sum
+        today = get_ToDay_Type1()
+        today_people = Users.objects.filter(create_time__range=today).count()
+        today_output = models.Info.objects.filter(create_time__range=today).count()
+        total = models.Record.objects.aggregate(sums=Sum('money'))
+        data = {
+            'total': total['sums'],
+            'today_people': today_people,
+            'today_output': today_output,
+        }
+        return SuccessResponse(msg='获取成功', data=data)
 
 # 配置项
 class AppConfigView(APIView):
-
     def get(self, request):
         data = {
             'money': 2,
         }
         return SuccessResponse(msg='获取成功', data=data)
+

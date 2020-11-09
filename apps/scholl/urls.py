@@ -9,4 +9,5 @@ urlpatterns = [
     path('/recharge', views.RechargeView.as_view()),
     path('/record', views.ShowRechargeRecordView.as_view()),
     path('/config', views.AppConfigView.as_view()),
+    path('/statistics', views.PanelView.as_view()),
 ]
