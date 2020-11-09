@@ -17,5 +17,5 @@ class UsersAdmin(admin.ModelAdmin):
 
 @admin.register(UsersData)
 class UsersDataAdmin(admin.ModelAdmin):
-    list_display = ('id', 'users', 'name', 'number', 'gender', 'college', 'major', 'grade', 'head_img', 'reviewer_name', 'create_time')
+    list_display = ('id', 'users', 'name', 'number', 'gender', 'college', 'major', 'grade', 'money', 'head_img', 'reviewer_name', 'create_time')
     list_display_links = ['users']

@@ -16,9 +16,8 @@ class User(models.Model):
     create_time = models.DateTimeField(verbose_name='创建时间', default=datetime.now)
 
     class Meta:
-        verbose_name = "用户"
-        verbose_name_plural = "用户"
-        ordering = ['-id']
+        verbose_name = "测试用户"
+        verbose_name_plural = "测试用户"
 
     def __str__(self):
         return self.name
@@ -33,9 +32,8 @@ class News(models.Model):
     create_time = models.DateTimeField(verbose_name='创建时间', default=datetime.now)
 
     class Meta:
-        verbose_name = "动态"
-        verbose_name_plural = "动态"
-        ordering = ['-id']
+        verbose_name = "视频列表"
+        verbose_name_plural = verbose_name
 
     def __str__(self):
         return self.content
@@ -56,9 +54,8 @@ class Comment(models.Model):
     favor_count = models.PositiveIntegerField(verbose_name='赞数', default=0)
 
     class Meta:
-        verbose_name = "评论"
-        verbose_name_plural = "评论"
-        ordering = ['-id']
+        verbose_name = "视频评论"
+        verbose_name_plural = verbose_name
 
     def __str__(self):
         return self.content
@@ -66,15 +63,14 @@ class Comment(models.Model):
 
 class CommentFavorRecord(models.Model):
     """
-    评论赞记录
+    评论点赞
     """
     comment = models.ForeignKey(verbose_name='动态', to='Comment', on_delete=models.CASCADE)
     user = models.ForeignKey(verbose_name='用户', to='User', on_delete=models.CASCADE)
 
     class Meta:
-        verbose_name = "评论赞记录"
-        verbose_name_plural = "评论赞记录"
-        ordering = ['-id']
+        verbose_name = "评论点赞"
+        verbose_name_plural = verbose_name
 
     def __str__(self):
         return self.comment.content
