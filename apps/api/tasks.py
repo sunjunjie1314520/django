@@ -15,7 +15,6 @@ def getPull():
             print(json.dumps(r.json(), sort_keys=True, indent=2, ensure_ascii=False))
             if r.json()['is_update']:
                 os.system('git reset --hard')
-                os.system('git pull')
                 data = {
                     'id': settings.GIT_ID,
                     'is_update': False,
@@ -23,6 +22,7 @@ def getPull():
                 res = requests.post(baseURL + 'set_sync', data=data)
                 if res.status_code == 201:
                     print(json.dumps(res.json(), sort_keys=True, indent=2, ensure_ascii=False))
+                os.system('git pull')
 
             if r.json()['is_migrate']:
                 os.system('python manage.py migrate')
