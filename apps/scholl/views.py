@@ -231,7 +231,7 @@ class PanelView(APIView):
         total = models.Record.objects.aggregate(sums=Sum('money'))
         total_registered = Users.objects.all().count()
         data = {
-            'total': total['sums'],
+            'total': total['sums'] if total['sums'] else 0,
             'today_people': today_people,
             'today_output': today_output,
             'total_registered': total_registered,
