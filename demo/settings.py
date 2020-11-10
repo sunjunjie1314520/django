@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'scholl.apps.SchollConfig',
     'upload.apps.UploadConfig',
     'goods.apps.GoodsConfig',
+    'system.apps.SystemConfig',
 ]
 
 MIDDLEWARE = [

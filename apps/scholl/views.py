@@ -17,6 +17,7 @@ from users.views import PersonalViewSerializer
 from utils.Paginator import PaginatorData
 from utils.Time import get_ToDay_Type1
 
+
 class IndexView(APIView):
     def get(self, request, *args, **kwargs):
         return SuccessResponse(msg='学校首页')
@@ -160,7 +161,6 @@ class RecordListlView(APIView):
 
 
 class RechargeViewSerializer(serializers.Serializer):
-
     phone = serializers.CharField(min_length=4, error_messages={
         'required': '手机号必填',
         'blank': '手机号不能为空',
@@ -176,6 +176,7 @@ class RechargeViewSerializer(serializers.Serializer):
             raise serializers.ValidationError('手机号只能是数字')
 
         return value
+
 
 class RechargeView(APIView):
 
@@ -205,7 +206,6 @@ class RechargeView(APIView):
 
 # 充值记录
 class ShowRechargeRecordSerializer(serializers.ModelSerializer):
-
     create_time = serializers.DateTimeField(format='%Y-%m-%d %H:%M:%S', read_only=True)
     users = PersonalViewSerializer()
 
@@ -220,6 +220,7 @@ class ShowRechargeRecordView(APIView):
     def get(self, request):
         queryset = models.Record.objects.all().order_by('-id')
         return PaginatorData(self, request, queryset, 100)
+
 
 # 统计
 class PanelView(APIView):
@@ -238,11 +239,12 @@ class PanelView(APIView):
         }
         return SuccessResponse(msg='获取成功', data=data)
 
+
 # 配置项
 class AppConfigView(APIView):
-    def get(self, request):
+    @classmethod
+    def get(cls, request):
         data = {
             'money': 2,
         }
         return SuccessResponse(msg='获取成功', data=data)
-
