@@ -229,10 +229,12 @@ class PanelView(APIView):
         today_people = Users.objects.filter(create_time__range=today).count()
         today_output = models.Info.objects.filter(create_time__range=today).count()
         total = models.Record.objects.aggregate(sums=Sum('money'))
+        total_registered = Users.objects.all().count()
         data = {
             'total': total['sums'],
             'today_people': today_people,
             'today_output': today_output,
+            'total_registered': total_registered,
         }
         return SuccessResponse(msg='获取成功', data=data)
 
