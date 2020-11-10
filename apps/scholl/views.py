@@ -16,6 +16,7 @@ from users.views import PersonalViewSerializer
 
 from utils.Paginator import PaginatorData
 from utils.Time import get_ToDay_Type1
+from system.models import Config
 
 
 class IndexView(APIView):
@@ -45,14 +46,14 @@ class SubmitSerializer(serializers.ModelSerializer):
 
 class SubmitView(APIView):
     def post(self, request, *args, **kwargs):
-
+        money = Config.objects.get(pk=1).money
         auth = GeneralAuthentication(request)
         if not auth.is_auth():
             return ErrorResponse(**auth.is_auth_data())
 
         ud = UsersData.objects.filter(users=auth.get_object()).first()
 
-        if ud.money < 2:
+        if ud.money < money:
             return ErrorResponse(msg='余额不足')
 
         lastRecord = models.Info.objects.filter(users=auth.get_object(), status__lte=2)
@@ -80,7 +81,7 @@ class SubmitView(APIView):
 
         models.Examine.objects.create(name=instructor, opinion=examine_opinion, info=info, create_time=new_time)
 
-        ud.money = F('money') - 2
+        ud.money = F('money') - money
         ud.save()
 
         return SuccessResponse(msg='提交成功', data=serializer.data)
@@ -244,7 +245,8 @@ class PanelView(APIView):
 class AppConfigView(APIView):
     @classmethod
     def get(cls, request):
+        money = Config.objects.get(pk=1).money
         data = {
-            'money': 2,
+            'money': money,
         }
         return SuccessResponse(msg='获取成功', data=data)
