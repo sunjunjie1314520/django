@@ -37,8 +37,6 @@ class SmsView(APIView):
 	
 	def post(self, request, *args, **kwargs):
 
-		return ErrorResponse(msg="系统升级中，暂停使用！")
-
 		serializer = self.serializer_class(data=request.data)
 
 		if not serializer.is_valid():
