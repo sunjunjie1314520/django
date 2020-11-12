@@ -66,9 +66,11 @@ class SmsView(APIView):
 		conn.set(phone, 123456, ex=5 * 60)
 
 		stamp = get_timestamp()
-		conn.set('stamp_{phone}'.format(phone=result.phone), stamp, ex=expired)
+		conn.set('stamp_{phone}'.format(phone=phone), stamp, ex=expired)
 
-		return SuccessResponse(msg='发送成功', data=result.get_data())
+		# return SuccessResponse(msg='发送成功', data=result.get_data())
+
+		return SuccessResponse(msg='发送成功')
 
 
 ################### 表单提交 #####################
