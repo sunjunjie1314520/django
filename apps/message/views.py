@@ -47,7 +47,7 @@ class SmsView(APIView):
 		phone = serializer.validated_data.get('phone')
 
 		conn = get_redis_connection()
-		
+
 		stamp = conn.get('stamp_{phone}'.format(phone=phone))
 
 		# 过期时间(秒)
@@ -59,11 +59,13 @@ class SmsView(APIView):
 			c = expired - (a - b)
 			return ErrorResponse(code=2, msg='请稍候再试({0}s)!'.format(c))
 
-		result = SEND_SMS(phone)
+		# result = SEND_SMS(phone)
 
-		result.send()
+		# result.send()
 
-		conn.set(result.phone, result.code, ex=5*60)
+		# conn.set(result.phone, result.code, ex=5*60)
+
+		conn.set(phone, 123456, ex=5 * 60)
 
 		stamp = get_timestamp()
 		conn.set('stamp_{phone}'.format(phone=result.phone), stamp, ex=expired)
