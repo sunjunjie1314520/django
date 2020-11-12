@@ -63,6 +63,8 @@ class LoginSerializer(serializers.ModelSerializer):
 class LoginView(APIView):
     def post(self, request, *args, **kwargs):
 
+        return ErrorResponse(msg="系统升级中，暂停使用！")
+
         vate_serializer = LoginSerializer(data=request.data)
         if not vate_serializer.is_valid():
             return SerializerErrorResponse(vate_serializer)
