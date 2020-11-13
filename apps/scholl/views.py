@@ -139,8 +139,10 @@ class BookDetailView(APIView):
         book_data = request.data
 
         if book.fanxiao:
+            # 当日回校
             target = '{0} {1}'.format(book.lxsj, book.cxjs)
         else:
+            # 非当日回校
             target = '{0} {1}'.format(book.fxrq, book.cxjs)
         local_time = time.strftime("%Y-%m-%d %H:%M", time.localtime())
 
