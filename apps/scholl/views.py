@@ -71,7 +71,7 @@ class SubmitView(APIView):
             money = config.not_money
 
         if ud.money < money:
-            return ErrorResponse(msg='余额不足%s' % money)
+            return ErrorResponse(msg='余额不足%s元' % money)
 
         count = models.Examine.objects.count()
 
