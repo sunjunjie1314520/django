@@ -18,6 +18,7 @@ from utils.Paginator import PaginatorData
 from utils.Time import get_ToDay_Type1
 from system.models import Config
 
+import time
 
 class IndexView(APIView):
     def get(self, request, *args, **kwargs):
@@ -110,8 +111,7 @@ class SubmitSerializer1(serializers.ModelSerializer):
     class Meta:
         model = models.Info
         fields = '__all__'
-
-
+# 记录详情
 class BookDetailView(APIView):
     def get(self, request, pk):
         """
@@ -137,6 +137,15 @@ class BookDetailView(APIView):
         if not book:
             return ErrorResponse(code=2, msg='ID不存在')
         book_data = request.data
+
+        target = '{0} {1}'.format(book.lxsj, book.cxjs)
+        local_time = time.strftime("%Y-%m-%d %H:%M", time.localtime())
+
+        # print(local_time, target)
+        if book.status == 2:
+            if local_time >= target:
+                return ErrorResponse(msg='超过返校时限', code=2)
+
         serializer = SubmitSerializer(instance=book, data=book_data)
         if not serializer.is_valid():
             return SerializerErrorResponse(serializer)
@@ -184,8 +193,7 @@ class RechargeViewSerializer(serializers.Serializer):
             raise serializers.ValidationError('手机号只能是数字')
 
         return value
-
-
+# 充值
 class RechargeView(APIView):
 
     def post(self, request, *args, **kwargs):
@@ -212,7 +220,6 @@ class RechargeView(APIView):
         return SuccessResponse(msg='充值成功')
 
 
-# 充值记录
 class ShowRechargeRecordSerializer(serializers.ModelSerializer):
     create_time = serializers.DateTimeField(format='%Y-%m-%d %H:%M:%S', read_only=True)
     users = PersonalViewSerializer()
@@ -220,8 +227,7 @@ class ShowRechargeRecordSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Record
         fields = '__all__'
-
-
+# 充值记录
 class ShowRechargeRecordView(APIView):
     serializer_class = ShowRechargeRecordSerializer
 
