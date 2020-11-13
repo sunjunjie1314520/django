@@ -69,7 +69,7 @@ class SubmitView(APIView):
         count = models.Examine.objects.count()
 
         info = serializer.save()
-        info.beian = '000{id}'.format(id=(17000 + count))
+        info.beian = '000{id}'.format(id=(202984 + count))
         info.users = auth.get_object()
         info.save()
 
