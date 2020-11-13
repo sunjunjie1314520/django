@@ -143,7 +143,7 @@ class BookDetailView(APIView):
 
         # print(local_time, target)
         if book.status == 2:
-            if local_time >= target:
+            if local_time > target:
                 return ErrorResponse(msg='超过返校时限', code=2)
 
         serializer = SubmitSerializer(instance=book, data=book_data)
