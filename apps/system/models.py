@@ -5,8 +5,8 @@ class Config(models.Model):
     """
     配置表
     """
-    money = models.PositiveIntegerField(verbose_name='当日返校金额', default=0)
-    not_money = models.PositiveIntegerField(verbose_name='非当日返校金额', default=0)
+    money = models.PositiveIntegerField(verbose_name='当日返校价格', default=0)
+    not_money = models.PositiveIntegerField(verbose_name='非当日返校价格', default=0)
     create_time = models.DateTimeField(verbose_name='注册时间', default=datetime.now)
 
     class Meta:
