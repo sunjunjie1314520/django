@@ -24,7 +24,7 @@ class Info(models.Model):
     instructor = models.CharField(verbose_name="辅导员", max_length=100)
     matter = models.TextField(verbose_name="出校事由", max_length=200)
 
-    lxsj = models.CharField(verbose_name="出校日期", max_length=100)
+    lxsj = models.CharField(verbose_name="离校日期", max_length=100)
     cxqs = models.CharField(verbose_name="出校起始时间", max_length=100)
     cxjs = models.CharField(verbose_name="出校结束时间", max_length=100)
     fxrq = models.CharField(verbose_name="返校日期", max_length=100, null=True, blank=True)

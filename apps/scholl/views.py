@@ -138,7 +138,10 @@ class BookDetailView(APIView):
             return ErrorResponse(code=2, msg='ID不存在')
         book_data = request.data
 
-        target = '{0} {1}'.format(book.lxsj, book.cxjs)
+        if book.fanxiao:
+            target = '{0} {1}'.format(book.lxsj, book.cxjs)
+        else:
+            target = '{0} {1}'.format(book.fxrq, book.cxjs)
         local_time = time.strftime("%Y-%m-%d %H:%M", time.localtime())
 
         # print(local_time, target)
