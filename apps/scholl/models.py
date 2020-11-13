@@ -27,6 +27,7 @@ class Info(models.Model):
     lxsj = models.CharField(verbose_name="出校日期", max_length=100)
     cxqs = models.CharField(verbose_name="出校起始时间", max_length=100)
     cxjs = models.CharField(verbose_name="出校结束时间", max_length=100)
+    fxrq = models.CharField(verbose_name="返校日期", max_length=100, null=True, blank=True)
 
     xingdong = models.CharField(verbose_name="出校行动轨迹", max_length=100)
 

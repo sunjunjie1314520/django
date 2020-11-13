@@ -46,25 +46,32 @@ class SubmitSerializer(serializers.ModelSerializer):
 
 class SubmitView(APIView):
     def post(self, request, *args, **kwargs):
-        money = Config.objects.get(pk=1).money
+
         auth = GeneralAuthentication(request)
         if not auth.is_auth():
             return ErrorResponse(**auth.is_auth_data())
 
-        ud = UsersData.objects.filter(users=auth.get_object()).first()
-
-        if ud.money < money:
-            return ErrorResponse(msg='余额不足')
-
+        # 查询上一次记录
         lastRecord = models.Info.objects.filter(users=auth.get_object(), status__lte=2)
-
         if lastRecord:
             return ErrorResponse(msg='请先结束上一次出校记录')
 
         serializer = SubmitSerializer(data=request.data)
-
         if not serializer.is_valid():
             return SerializerErrorResponse(serializer)
+
+        config = Config.objects.get(pk=1)
+        ud = UsersData.objects.filter(users=auth.get_object()).first()
+
+        fanxiao = serializer.validated_data.get('fanxiao')
+
+        if fanxiao:
+            money = config.money
+        else:
+            money = config.not_money
+
+        if ud.money < money:
+            return ErrorResponse(msg='余额不足%s' % money)
 
         count = models.Examine.objects.count()
 
