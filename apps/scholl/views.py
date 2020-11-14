@@ -260,12 +260,21 @@ class PanelView(APIView):
         return SuccessResponse(msg='获取成功', data=data)
 
 
+
+class ConfigSerializer(serializers.ModelSerializer):
+    create_time = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S")
+
+    class Meta:
+        model = Config
+        fields = '__all__'
+
+
 # 配置项
 class AppConfigView(APIView):
     @classmethod
     def get(cls, request):
-        money = Config.objects.get(pk=1).money
-        data = {
-            'money': money,
-        }
-        return SuccessResponse(msg='获取成功', data=data)
+
+        queryset = Config.objects.get(pk=1)
+        serializer = ConfigSerializer(instance=queryset)
+
+        return SuccessResponse(msg='获取成功', data=serializer.data)
