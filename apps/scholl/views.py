@@ -111,6 +111,7 @@ class SubmitSerializer1(serializers.ModelSerializer):
     class Meta:
         model = models.Info
         fields = '__all__'
+
 # 记录详情
 class BookDetailView(APIView):
     def get(self, request, pk):

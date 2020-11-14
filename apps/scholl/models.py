@@ -32,7 +32,7 @@ class Info(models.Model):
     xingdong = models.CharField(verbose_name="出校行动轨迹", max_length=100)
 
     guiji = models.BooleanField(verbose_name="轨迹", default=True)
-    fanxiao = models.BooleanField(verbose_name="返校", default=True)
+    fanxiao = models.BooleanField(verbose_name="当日返校", default=True)
 
     status = models.IntegerField(verbose_name="出校状态", choices=status_choices, default=1)
 

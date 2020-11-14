@@ -1,7 +1,7 @@
 
 from django.contrib import admin
 
-from .models import Info, Examine
+from .models import Info, Examine, Record
 
 
 @admin.register(Info)
@@ -13,3 +13,8 @@ class InfoAdmin(admin.ModelAdmin):
 class ExamineAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'opinion', 'info', 'create_time')
     list_display_links = ['name']
+
+@admin.register(Record)
+class RecordAdmin(admin.ModelAdmin):
+    list_display = ('id', 'users', 'money', 'create_time')
+    list_display_links = ['users']
