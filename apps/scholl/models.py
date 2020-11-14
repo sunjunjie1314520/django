@@ -57,7 +57,6 @@ class Examine(models.Model):
     class Meta:
         verbose_name = "审核记录"
         verbose_name_plural = "审核记录"
-        ordering = ['-id']
 
     def __str__(self):
         return self.name
