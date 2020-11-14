@@ -74,10 +74,10 @@ class SubmitView(APIView):
         if ud.money < money:
             return ErrorResponse(msg='余额不足%s元' % money)
 
-        count = models.Examine.objects.count()
+        count = models.Info.objects.all().order_by('-id').first()
 
         info = serializer.save()
-        info.beian = '000{id}'.format(id=(202984 + count))
+        info.beian = '000{id}'.format(id=(202984 + count.id))
         info.users = auth.get_object()
         info.save()
 
