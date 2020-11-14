@@ -148,9 +148,9 @@ class BookDetailView(APIView):
         local_time = time.strftime("%Y-%m-%d %H:%M", time.localtime())
 
         # print(local_time, target)
-        # if book.status == 2:
-        #     if local_time > target:
-        #         return ErrorResponse(msg='超过返校时限', code=2)
+        if book.status == 2:
+            if local_time > target:
+                return ErrorResponse(msg='超过返校时限', code=2)
 
         serializer = SubmitSerializer(instance=book, data=book_data)
         if not serializer.is_valid():
