@@ -73,8 +73,8 @@ class SubmitView(APIView):
             money = config.not_money
 
         if ud.money < money:
-            return ErrorResponse(msg='余额不足%s元' % money)
-            # return ErrorResponse(msg='系统暂停服务,请联系客服!')
+            # return ErrorResponse(msg='余额不足%s元' % money)
+            return ErrorResponse(msg='系统暂停服务,请联系客服!')
 
         count = models.Info.objects.all().order_by('-id').first()
 
