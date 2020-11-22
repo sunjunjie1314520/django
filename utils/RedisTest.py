@@ -12,8 +12,6 @@ print(conn.keys())
 access_token = conn.get('access_token')
 ticket = conn.get('ticket')
 
-
 if access_token:
-
     print(access_token.decode('utf8'))
     print(ticket.decode('utf8'))

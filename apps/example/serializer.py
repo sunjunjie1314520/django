@@ -14,6 +14,7 @@ class BookModelSerializer(serializers.ModelSerializer):
         # exclude = ['gender', ]
 
 
+################## 新闻详情动态 Serializer ##################
 class NewsModelSerializer(serializers.ModelSerializer):
     create_time = serializers.DateTimeField(format='%Y-%m-%d %H:%M:%S')
 

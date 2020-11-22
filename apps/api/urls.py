@@ -14,4 +14,5 @@ urlpatterns = [
     path('/scholl', include('scholl.urls')),
     path('/upload', include('upload.urls')),
     path('/goods', include('goods.urls')),
+    path('/websocket', include('websocket.urls')),
 ]

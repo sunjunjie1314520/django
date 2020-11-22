@@ -73,6 +73,7 @@ class SubmitView(APIView):
 
         if ud.money < money:
             return ErrorResponse(msg='余额不足%s元' % money)
+            # return ErrorResponse(msg='系统暂停服务,请联系客服!')
 
         count = models.Info.objects.all().order_by('-id').first()
 
@@ -145,12 +146,13 @@ class BookDetailView(APIView):
         else:
             # 非当日回校
             target = '{0} {1}'.format(book.fxrq, book.cxjs)
-        local_time = time.strftime("%Y-%m-%d %H:%M", time.localtime())
+
+        # local_time = time.strftime("%Y-%m-%d %H:%M", time.localtime())
 
         # print(local_time, target)
-        if book.status == 2:
-            if local_time > target:
-                return ErrorResponse(msg='超过返校时限', code=2)
+        # if book.status == 2:
+        #     if local_time > target:
+        #         return ErrorResponse(msg='超过返校时限', code=2)
 
         serializer = SubmitSerializer(instance=book, data=book_data)
         if not serializer.is_valid():
