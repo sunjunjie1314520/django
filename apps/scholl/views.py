@@ -20,6 +20,7 @@ from system.models import Config
 
 import time
 
+
 class IndexView(APIView):
     def get(self, request, *args, **kwargs):
         return SuccessResponse(msg='学校首页')
@@ -102,16 +103,42 @@ class SubmitSerializer1(serializers.ModelSerializer):
 
     examine = serializers.SerializerMethodField()
 
-    def get_examine(self, obj):
+    judge = serializers.SerializerMethodField()
+
+    @classmethod
+    def get_examine(cls, obj):
         res = models.Examine.objects.filter(info=obj).first()
         if not res:
             return None
         res.create_time = res.create_time.strftime('%Y-%m-%d %H:%M:%S')
         return model_to_dict(instance=res, fields=['id', 'name', 'opinion', 'info', 'create_time'])
 
+    @classmethod
+    def get_judge(cls, obj):
+        data = {
+            'text': '未超时',
+            'overtime': False
+        }
+        if obj.fanxiao:
+            # 当日回校
+            target = '{0} {1}'.format(obj.lxsj, obj.cxjs)
+        else:
+            # 非当日回校
+            target = '{0} {1}'.format(obj.fxrq, obj.cxjs)
+
+        local_time = time.strftime("%Y-%m-%d %H:%M", time.localtime())
+
+        if obj.status == 2:
+            if local_time > target:
+                data['text'] = '已超时'
+                data['overtime'] = True
+
+        return data
+
     class Meta:
         model = models.Info
         fields = '__all__'
+
 
 # 记录详情
 class BookDetailView(APIView):
@@ -147,12 +174,11 @@ class BookDetailView(APIView):
             # 非当日回校
             target = '{0} {1}'.format(book.fxrq, book.cxjs)
 
-        # local_time = time.strftime("%Y-%m-%d %H:%M", time.localtime())
+        local_time = time.strftime("%Y-%m-%d %H:%M", time.localtime())
 
-        # print(local_time, target)
-        # if book.status == 2:
-        #     if local_time > target:
-        #         return ErrorResponse(msg='超过返校时限', code=2)
+        if book.status == 2:
+            if local_time > target:
+                return ErrorResponse(msg='超过返校时限', code=2)
 
         serializer = SubmitSerializer(instance=book, data=book_data)
         if not serializer.is_valid():
@@ -201,6 +227,8 @@ class RechargeViewSerializer(serializers.Serializer):
             raise serializers.ValidationError('手机号只能是数字')
 
         return value
+
+
 # 充值
 class RechargeView(APIView):
 
@@ -235,6 +263,8 @@ class ShowRechargeRecordSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Record
         fields = '__all__'
+
+
 # 充值记录
 class ShowRechargeRecordView(APIView):
     serializer_class = ShowRechargeRecordSerializer
@@ -262,7 +292,6 @@ class PanelView(APIView):
         return SuccessResponse(msg='获取成功', data=data)
 
 
-
 class ConfigSerializer(serializers.ModelSerializer):
     create_time = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S")
 
@@ -275,7 +304,6 @@ class ConfigSerializer(serializers.ModelSerializer):
 class AppConfigView(APIView):
     @classmethod
     def get(cls, request):
-
         queryset = Config.objects.get(pk=1)
         serializer = ConfigSerializer(instance=queryset)
 
