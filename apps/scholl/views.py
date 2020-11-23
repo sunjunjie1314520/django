@@ -73,8 +73,8 @@ class SubmitView(APIView):
             money = config.not_money
 
         if ud.money < money:
-            # return ErrorResponse(msg='余额不足%s元' % money)
-            return ErrorResponse(msg='系统暂停服务,请联系客服!')
+            return ErrorResponse(msg='余额不足%s元' % money)
+            # return ErrorResponse(msg='系统暂停服务,请联系客服!')
 
         count = models.Info.objects.all().order_by('-id').first()
 
@@ -304,7 +304,10 @@ class ConfigSerializer(serializers.ModelSerializer):
 class AppConfigView(APIView):
     @classmethod
     def get(cls, request):
-        queryset = Config.objects.get(pk=1)
+        pid = request.query_params.get('id', 1)
+        print(pid)
+
+        queryset = Config.objects.get(pk=pid)
         serializer = ConfigSerializer(instance=queryset)
 
         return SuccessResponse(msg='获取成功', data=serializer.data)
