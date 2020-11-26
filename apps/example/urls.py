@@ -2,10 +2,7 @@
 from django.urls import path, include
 from django.http import JsonResponse
 
-from .models import User
-
 from . import views
-
 
 def Index(request):
     return JsonResponse({

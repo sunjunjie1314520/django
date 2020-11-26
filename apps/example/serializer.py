@@ -1,85 +1,53 @@
 from rest_framework import serializers
 from . import models
-from django.forms.models import model_to_dict
+
+from users.serializers import UsersSerializer
 
 
-class BookModelSerializer(serializers.ModelSerializer):
-    create_time = serializers.DateTimeField(label='添加时间', format='%Y-%m-%d %H:%M:%S', required=False)
-    sex = serializers.CharField(source='get_gender_display', read_only=True)
+class CommentSerializer1(serializers.ModelSerializer):
+    user = UsersSerializer()
 
     class Meta:
-        model = models.User
-        fields = '__all__'
-        extra_kwargs = {'gender': {'write_only': True}}
-        # exclude = ['gender', ]
+        model = models.Comment
+        exclude = ['news', 'root', 'depth']
 
+
+class CommentSerializer(serializers.ModelSerializer):
+    user = UsersSerializer()
+    create_time = serializers.DateTimeField(format='%Y-%m-%d %H:%M:%S')
+    reply = CommentSerializer1()
+    favor_count = serializers.SerializerMethodField()
+    is_zan = serializers.SerializerMethodField()
+
+    @classmethod
+    def get_favor_count(cls, instance):
+
+        count = models.CommentFavorRecord.objects.filter(comment=instance).count()
+        return count
+
+    def get_is_zan(self, instance):
+
+        user = self.context['request'].user
+        if user:
+            return models.CommentFavorRecord.objects.filter(comment=instance, user_id=user.id).exists()
+        else:
+            return False
+
+    class Meta:
+        model = models.Comment
+        # fields = '__all__'
+        exclude = ['news', 'root', 'depth']
+        # depth = 1
 
 ################## 新闻详情动态 Serializer ##################
 class NewsModelSerializer(serializers.ModelSerializer):
     create_time = serializers.DateTimeField(format='%Y-%m-%d %H:%M:%S')
+    comments = serializers.SerializerMethodField()
 
-    comment = serializers.SerializerMethodField()
-
-    def get_comment(self, obj):
-        first_queryset = models.Comment.objects.filter(news=obj, depth=1)
-
-        first_json = [{
-            'id': row.id,
-            'content': row.content,
-            'create_time': row.create_time.strftime('%Y-%m-%d %H:%M:%S'),
-            'favor_count': row.favor_count,
-            'user': {
-                'id': row.user.id,
-                'name': row.user.name,
-                'avatar': row.user.avatar,
-            },
-            'child': []
-
-        } for row in first_queryset]
-
-        first_id_list = [row.id for row in first_queryset]
-
-        # 'id',
-        # 'content',
-        # 'create_time',
-        # 'favor_count',
-        # 'user__name',
-        # 'user__avatar',
-        # 'reply_id',
-        # 'reply__user__avatar',
-        # 'reply__user__name'
-
-        secound_queryset = models.Comment.objects.filter(news=obj, depth=2, reply_id__in=first_id_list)
-
-        secound_json = [{
-            'id': row.id,
-            'content': row.content,
-            'create_time': row.create_time.strftime('%Y-%m-%d %H:%M:%S'),
-            'favor_count': row.favor_count,
-            'user': {
-                'id': row.user.id,
-                'name': row.user.name,
-                'avatar': row.user.avatar,
-            },
-            'reply_id': row.reply.id,
-            'reply_user': {
-                'name': row.reply.user.name,
-                'avatar': row.reply.user.avatar,
-            },
-
-        } for row in secound_queryset]
-
-        import collections
-        first_dict = collections.OrderedDict()
-        for item in first_json:
-            first_dict[item['id']] = item
-
-        for node in secound_json:
-            first_dict[node['reply_id']]['child'].append(node)
-
-        print(first_dict)
-
-        return first_json
+    def get_comments(self, instance):
+        query_set = models.Comment.objects.filter(news=instance, depth=1)[:10]
+        serializer = CommentSerializer(instance=query_set, many=True, context=self.context)
+        return serializer.data
 
     class Meta:
         model = models.News

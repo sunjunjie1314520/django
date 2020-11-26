@@ -23,7 +23,7 @@ def PaginatorData(self, request, queryset, page_size):
         'is_next': pag_num != int(current_page_num),
         'is_prev': int(current_page_num) > 1,
         'paging': [row + 1 for row in range(pag_num)],
-        'list_data': serializer.data,
+        'list': serializer.data,
 
     }
     return SuccessResponse(msg='列表获取成功', data=data_list)

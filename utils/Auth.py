@@ -1,10 +1,12 @@
 import jwt
-
-from users.models import Users
 import datetime
 from django.conf import settings
 
+from users.models import Users
+from .Response import ErrorResponse
 
+
+# 登录错误类
 class LoginError(Exception):
     def __init__(self, text):
         self.text = text
@@ -55,6 +57,7 @@ class GeneralAuthentication:
         return obj
 
 
+# 登录签发TOKEN
 class GenerateToken:
     headers = {
         'typ': 'jwt',
@@ -76,3 +79,20 @@ class GenerateToken:
 
     def get_token(self):
         return self.token
+
+
+# 认证装饰器
+def Authentication(view_func):
+
+    # from django.utils.decorators import method_decorator
+    # @method_decorator(my_decorator, name='get')
+    def wrapper(request, *args, **kwargs):
+        auth = GeneralAuthentication(request)
+        # if not auth.is_auth():
+        #     return ErrorResponse(**auth.is_auth_data())
+        if auth.is_auth():
+            request.user = auth.get_object()
+        else:
+            request.user = None
+        return view_func(request, *args, **kwargs)
+    return wrapper
