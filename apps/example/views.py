@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 
 from utils.Response import SuccessResponse, ErrorResponse, SerializerErrorResponse
 from utils.Paginator import PaginatorData
-from utils.Auth import Authentication
+from utils.Auth import Authentication, Permission
 from django.utils.decorators import method_decorator
 
 from . import models
@@ -38,7 +38,7 @@ class BookDetailView(APIView):
         book = models.User.objects.filter(id=pk).first()
         if not book:
             return ErrorResponse(code=2, msg='详情不存在')
-        serializer = UserSerializer(instance=book)
+        serializer = UsersSerializer(instance=book)
         return SuccessResponse(msg='详情获取成功', data=serializer.data)
 
     def put(self, request, pk):
@@ -49,7 +49,7 @@ class BookDetailView(APIView):
         if not book:
             return ErrorResponse(code=2, msg='详情不存在')
         book_data = request.data
-        serializer = UserSerializer(instance=book, data=book_data)
+        serializer = UsersSerializer(instance=book, data=book_data)
         if not serializer.is_valid():
             return SerializerErrorResponse(serializer)
         serializer.save()
@@ -71,13 +71,14 @@ class AuthView(APIView):
     def post(self, request, *args, **kwargs):
 
         queryset = models.User.objects.all()
-        serializer = UserSerializer(instance=queryset, many=True)
+        serializer = UsersSerializer(instance=queryset, many=True)
 
         return SuccessResponse(msg='测试登录成功', data=serializer.data)
 
 
 class NewsDetailView(APIView):
     @method_decorator(Authentication)
+    # @method_decorator(Permission)
     def get(self, request, pk):
         news = models.News.objects.filter(id=pk).first()
         if not news:

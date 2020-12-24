@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'channels',  # 【channels】（第1步）pip install -U channels 安装
     'corsheaders',
     'api.apps.ApiConfig',
     'users.apps.UsersConfig',
@@ -58,6 +59,7 @@ INSTALLED_APPS = [
     'upload.apps.UploadConfig',
     'goods.apps.GoodsConfig',
     'system.apps.SystemConfig',
+    'store.apps.StoreConfig',
 ]
 
 MIDDLEWARE = [
@@ -198,6 +200,19 @@ CORS_ALLOW_HEADERS = list(default_headers) + [
 
 HTTP_URL = 'http://42.194.232.90:8082'
 GIT_ID = 3
+
+# 【channels】（第3步）设置为指向路由对象作为根应用程序
+ASGI_APPLICATION = "StarMeow.routing.application"
+
+# 【channels】后端
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [(REDIS_URL, 6379)],
+        },
+    },
+}
 
 try:
     from .local_settings import *

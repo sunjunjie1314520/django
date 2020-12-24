@@ -83,16 +83,24 @@ class GenerateToken:
 
 # 认证装饰器
 def Authentication(view_func):
-
     # from django.utils.decorators import method_decorator
     # @method_decorator(my_decorator, name='get')
     def wrapper(request, *args, **kwargs):
+
         auth = GeneralAuthentication(request)
-        # if not auth.is_auth():
-        #     return ErrorResponse(**auth.is_auth_data())
+        if not auth.is_auth():
+            request.message = auth.is_auth_data()
         if auth.is_auth():
             request.user = auth.get_object()
         else:
             request.user = None
+        return view_func(request, *args, **kwargs)
+    return wrapper
+
+
+def Permission(view_func):
+    def wrapper(request, *args, **kwargs):
+        if not request.user:
+            return ErrorResponse(**request.message)
         return view_func(request, *args, **kwargs)
     return wrapper

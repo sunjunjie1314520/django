@@ -28,10 +28,9 @@ class CommentSerializer(serializers.ModelSerializer):
     def get_is_zan(self, instance):
 
         user = self.context['request'].user
-        if user:
-            return models.CommentFavorRecord.objects.filter(comment=instance, user_id=user.id).exists()
-        else:
+        if not user:
             return False
+        return models.CommentFavorRecord.objects.filter(comment=instance, user=user).exists()
 
     class Meta:
         model = models.Comment
