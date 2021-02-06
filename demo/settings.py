@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'goods.apps.GoodsConfig',
     'system.apps.SystemConfig',
     'store.apps.StoreConfig',
+    'fund.apps.FundConfig'
 ]
 
 MIDDLEWARE = [

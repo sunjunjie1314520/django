@@ -20,7 +20,7 @@ class SEND_SMS:
         self.phone = phone
         self.code = RANDOM_CODE()
     
-    def send(self):
+    def send(self, isDebug=True, content=''):
         # 我们的国内短信接口是http标准协议，接口说明和demo的地址：
         # http://www.b2m.cn/static/doc/sms/onlysms_or.html
         #  
@@ -35,7 +35,7 @@ class SEND_SMS:
         # 端口是8080
         # 可任选，接口里有六种发送方法，用哪种都可以。
 
-        debug = settings.DEBUG
+        debug = settings.DEBUG if isDebug else isDebug
 
         if not debug:
             url = 'http://bjksmtn.b2m.cn/simpleinter/sendSMS'
@@ -49,9 +49,11 @@ class SEND_SMS:
                 'timestamp': timestamp,
                 'sign': MD5('{0}{1}{2}'.format(appId, secretKey, timestamp)),
                 'mobiles': self.phone,
-                'content': '【国寿安保基金】您的验证码为：{code}，验证码5分钟有效'.format(code=self.code),
+                'content': '【国寿安保基金】您的验证码为：{code}，验证码5分钟有效'.format(code=self.code) if content == '' else content,
             }
-            
+
+            print(data)
+
             sendRes = requests.get(url, params=data)
 
             if sendRes.status_code == 200:
@@ -62,13 +64,13 @@ class SEND_SMS:
             else:
                 print('request error')
 
-
     def get_data(self):
         debug = settings.DEBUG
         if not debug:
             return None
         return {'code': self.code}
 
+
 if __name__ == "__main__":
-    res = SEND_SMS('19871455054, 18827183521')
-    print(res)
+    res = SEND_SMS('19871455054')
+    res.send(isDebug=False)
