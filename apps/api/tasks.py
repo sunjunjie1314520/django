@@ -162,4 +162,4 @@ def End(item):
 
 if not settings.DEBUG:
     _thread.start_new_thread(main1, (30,))
-    _thread.start_new_thread(main2, (1, ['10:30:00', '15:00:00', '21:21:00']))
+    _thread.start_new_thread(main2, (1, ['10:30:00', '15:00:00', '21:25:00']))
