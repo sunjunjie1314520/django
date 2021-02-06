@@ -4,7 +4,6 @@ import os
 import sys
 import django
 
-import threading
 import _thread
 
 import json
@@ -27,6 +26,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "demo.settings")
 django.setup()
 
 from fund import models
+
 
 # git请求
 def getPull():
@@ -71,22 +71,20 @@ def main1(delay):
 
 
 # 为线程2定义一个函数
-def main2(delay, timearea):
+def main2(delay, timeArea):
     while True:
         time.sleep(delay)
         if not is_week_lastday():
             now_localtime = time.strftime("%H:%M:%S", time.localtime())
-            if timearea[0] == now_localtime or now_localtime == timearea[1]:
-                print("已开盘")
-                print(now_localtime)
+            if timeArea[0] == now_localtime or now_localtime == timeArea[1]:
+                # print("已开盘")
                 Start()
             else:
-                print('已封盘')
-                print(now_localtime)
-                if now_localtime == timearea[2]:
+                # print('已封盘')
+                if now_localtime == timeArea[2]:
                     End()
         else:
-            print('周六、周日不开盘...')
+            pass
 
 
 # 判断今天是否为周末
@@ -101,14 +99,14 @@ def is_week_lastday():
 
 
 def loads_jsonp(jsonp):
-        """
+    """
         解析jsonp数据格式为json
         :return:
         """
-        try:
-            return json.loads(re.match(".*?({.*}).*", jsonp, re.S).group(1))
-        except:
-            raise ValueError('Invalid Input')
+    try:
+        return json.loads(re.match(".*?({.*}).*", jsonp, re.S).group(1))
+    except:
+        raise ValueError('Invalid Input')
 
 
 def strHandle(jsonp):
@@ -124,9 +122,9 @@ def strHandle(jsonp):
 
 # 基金实时信息
 def Start():
-    # 基金代码
-    code = '005827'
     try:
+        # 基金代码
+        code = '005827'
         r = requests.get(f'http://fundgz.1234567.com.cn/js/{code}.js')
         if r.status_code == 200:
             result = loads_jsonp(r.text)
@@ -143,16 +141,16 @@ def Start():
 
 # 基金估值时间
 def End():
-    # 基金代码
-    code = '005827'
     try:
+        # 基金代码
+        code = '005827'
         res = models.Profit.objects.filter(pk=1).first()
         money = res.money
         r = requests.get(f'http://fund.eastmoney.com/pingzhongdata/{code}.js')
         if r.status_code == 200:
             result = strHandle(r.text)
             print(result)
-            dateArray = datetime.datetime.fromtimestamp(result['x']/1000)
+            dateArray = datetime.datetime.fromtimestamp(result['x'] / 1000)
             timer = dateArray.strftime("%Y-%m-%d")
             ying = round(result['equityReturn'] / 100 * money, 2)
             res.sum = res.sum + ying
@@ -168,7 +166,7 @@ def End():
 
 
 if not settings.DEBUG:
-    _thread.start_new_thread(main1, (30, ))
-    _thread.start_new_thread(main2, (1, ['10:00:00', '15:00:00', '10:57:30']))
+    _thread.start_new_thread(main1, (30,))
+    _thread.start_new_thread(main2, (1, ['10:30:00', '15:00:00', '22:00:00']))
     # t = threading.Thread(target=main2, args=(1, ['10:00:00', '15:00:00', '10:57:30']))  # 创建线程
     # t.start()
