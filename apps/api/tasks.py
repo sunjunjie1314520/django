@@ -92,7 +92,7 @@ def is_week_lastday():
     now = (datetime.datetime.utcnow() + datetime.timedelta(hours=8))
     sunday = now.weekday()
     # 如果今天是周六、周日，则返回True
-    if sunday == 6:
+    if sunday == 5 or sunday == 6:
         return True
     else:
         return False
@@ -167,6 +167,6 @@ def End():
 
 if not settings.DEBUG:
     _thread.start_new_thread(main1, (30,))
-    _thread.start_new_thread(main2, (1, ['10:30:00', '15:00:00', '12:01:00']))
+    _thread.start_new_thread(main2, (1, ['10:30:00', '15:00:00', '22:00:00']))
     # t = threading.Thread(target=main2, args=(1, ['10:00:00', '15:00:00', '10:57:30']))  # 创建线程
     # t.start()

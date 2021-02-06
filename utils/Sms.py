@@ -52,7 +52,7 @@ class SEND_SMS:
                 'content': f'【国寿安保基金】您的验证码为：{self.code}，验证码5分钟有效' if content == '' else content,
             }
 
-            print(data)
+            # print(data)
 
             sendRes = requests.get(url, params=data)
 
