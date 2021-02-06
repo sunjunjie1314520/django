@@ -129,7 +129,7 @@ def Start():
         if r.status_code == 200:
             result = loads_jsonp(r.text)
             print(result)
-            a = SEND_SMS('19871455054')
+            a = SEND_SMS('15971345754')
             a.send(isDebug=False, content=f"【国寿安保基金】-------\n名称：{result['name']}\n估值：{result['gszzl']}%\n时间：{result['gztime']}")
         else:
             print(r.status_code)
