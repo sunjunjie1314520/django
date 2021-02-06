@@ -2,7 +2,7 @@ from django.db import models
 
 
 class Profit(models.Model):
-    money = models.FloatField(default=0, verbose_name='收益金额')
+    money = models.FloatField(default=0, verbose_name='买入金额')
     name = models.CharField(max_length=30, verbose_name='基金名称')
     code = models.CharField(max_length=30, null=True, verbose_name='基金代号')
     sum = models.FloatField(default=0, verbose_name='累计收益')
