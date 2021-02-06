@@ -3,7 +3,6 @@ import os
 import sys
 import django
 
-
 import threading
 
 import json
@@ -24,7 +23,6 @@ sys.path.append(base_dir)
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "demo.settings")
 
 django.setup()
-
 
 from fund import models
 
