@@ -49,7 +49,7 @@ class SEND_SMS:
                 'timestamp': timestamp,
                 'sign': MD5('{0}{1}{2}'.format(appId, secretKey, timestamp)),
                 'mobiles': self.phone,
-                'content': '【国寿安保基金】您的验证码为：{code}，验证码5分钟有效'.format(code=self.code) if content == '' else content,
+                'content': f'【国寿安保基金】您的验证码为：{self.code}，验证码5分钟有效' if content == '' else content,
             }
 
             print(data)
