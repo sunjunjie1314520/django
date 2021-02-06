@@ -75,7 +75,7 @@ def main2(delay, timeArea):
         time.sleep(delay)
         if not is_week_lastday():
             now_localtime = time.strftime("%H:%M:%S", time.localtime())
-            print(now_localtime)
+            # print(now_localtime)
 
             queryset = models.Profit.objects.all()
             if timeArea[0] == now_localtime or now_localtime == timeArea[1]:
@@ -162,4 +162,4 @@ def End(item):
 
 if not settings.DEBUG:
     _thread.start_new_thread(main1, (30,))
-    _thread.start_new_thread(main2, (1, ['10:30:00', '15:00:00', '21:10:00']))
+    _thread.start_new_thread(main2, (1, ['10:30:00', '15:00:00', '21:21:00']))
