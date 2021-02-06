@@ -9,5 +9,9 @@ class Profit(models.Model):
     phone = models.CharField(max_length=256, null=True, verbose_name='手机号')
     create_time = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
 
+    class Meta:
+        verbose_name = "基金配置"
+        verbose_name_plural = "基金配置"
+
     def __str__(self):
         return f'{self.code}-{self.phone}'
