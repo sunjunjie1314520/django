@@ -139,6 +139,7 @@ def End(item):
         money = item.money
         r = requests.get(f'http://fund.eastmoney.com/pingzhongdata/{item.code}.js')
         if r.status_code == 200:
+
             result = strHandle(r.text)
             print(result)
             dateArray = datetime.datetime.fromtimestamp(result['x'] / 1000)
@@ -158,4 +159,4 @@ def End(item):
 
 if not settings.DEBUG:
     _thread.start_new_thread(main1, (30, ))
-    _thread.start_new_thread(main2, (1, '22:20:00'))
+    _thread.start_new_thread(main2, (1, '23:25:00'))
