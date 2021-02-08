@@ -69,6 +69,7 @@ def main1(delay):
         time.sleep(delay)
         getPull()
 
+
 # 为线程2定义一个函数
 def main2(delay, timeArea):
     while True:
@@ -157,4 +158,4 @@ def End(item):
 
 if not settings.DEBUG:
     _thread.start_new_thread(main1, (30, ))
-    _thread.start_new_thread(main2, (1, '22:00:00'))
+    _thread.start_new_thread(main2, (1, '22:20:00'))
