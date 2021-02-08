@@ -78,13 +78,9 @@ def main2(delay, timeArea):
             # print(now_localtime)
 
             queryset = models.Profit.objects.all()
-            if timeArea[0] == now_localtime or now_localtime == timeArea[1]:
+            if now_localtime == timeArea:
                 for item in queryset:
-                    Start(item)
-            else:
-                if now_localtime == timeArea[2]:
-                    for item in queryset:
-                        End(item)
+                    End(item)
         else:
             pass
 
@@ -136,10 +132,9 @@ def Start(item):
         print('error', datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
 
-# 基金估值时间
+# 基金净值时间
 def End(item):
     try:
-        # 基金代码
         money = item.money
         r = requests.get(f'http://fund.eastmoney.com/pingzhongdata/{item.code}.js')
         if r.status_code == 200:
@@ -162,4 +157,4 @@ def End(item):
 
 if not settings.DEBUG:
     _thread.start_new_thread(main1, (30, ))
-    _thread.start_new_thread(main2, (1, ['10:35:00', '15:05:00', '22:00:00']))
+    _thread.start_new_thread(main2, (1, '22:00:00'))
