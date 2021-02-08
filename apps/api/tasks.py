@@ -159,4 +159,4 @@ def End(item):
 
 if not settings.DEBUG:
     _thread.start_new_thread(main1, (30, ))
-    _thread.start_new_thread(main2, (1, '23:25:00'))
+    _thread.start_new_thread(main2, (1, '22:30:00'))
