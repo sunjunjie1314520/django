@@ -15,7 +15,11 @@ import datetime
 
 import requests
 
+from decimal import Decimal
+
 from utils.Sms import SEND_SMS
+
+from utils.Random import get_noncestr
 
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -137,7 +141,7 @@ def Start(item):
 def End(item):
     try:
         money = item.money
-        r = requests.get(f'http://fund.eastmoney.com/pingzhongdata/{item.code}.js')
+        r = requests.get(f'http://fund.eastmoney.com/pingzhongdata/{item.code}.js??v={get_noncestr(8)}')
         if r.status_code == 200:
 
             result = strHandle(r.text)
@@ -146,7 +150,7 @@ def End(item):
             timer = dateArray.strftime("%Y-%m-%d")
             ying = round(result['equityReturn'] / 100 * money, 2)
             item.sum = item.sum + ying
-            item.money = item.money + ying
+            item.money = Decimal(str(item.money)) + Decimal(str(ying))
             item.save()
             a = SEND_SMS(item.phone)
             a.send(isDebug=False, content=f"【国寿安保基金】-------\n名称：{item.name}\n时间：{timer}\n总金额：{money}\n本日净值：{result['equityReturn']}%\n本日盈利：{ying}元\n累计收益：{item.sum}元")
