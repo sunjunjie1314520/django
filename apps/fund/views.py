@@ -22,7 +22,7 @@ class IndexView(APIView):
 
 class SearchListView(APIView):
     """
-    基金搜索
+    基金历史净值
     """
     @classmethod
     def post(self, request):
@@ -39,4 +39,21 @@ class SearchListView(APIView):
                 # print(result)
         except BaseException as e:
             print(e)
-        return SuccessResponse(msg='Search', data=result)
+        return SuccessResponse(msg='基金历史净值', data=result)
+
+class RealtimeListView(APIView):
+    """
+        基金实时信息
+        """
+    @classmethod
+    def post(self, request):
+        print(request.data)
+        code = request.data.get('code')
+        try:
+            r = requests.get(f'http://fundgz.1234567.com.cn/js/{code}.js')
+            if r.status_code == 200:
+                result = loads_jsonp(r.text)
+                print(result)
+        except BaseException as e:
+            print(e)
+        return SuccessResponse(msg='基金实时信息', data=result)
