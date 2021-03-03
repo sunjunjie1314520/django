@@ -15,4 +15,5 @@ urlpatterns = [
     path('/upload', include('upload.urls')),
     path('/goods', include('goods.urls')),
     path('/store', include('store.urls')),
+    path('/fund', include('fund.urls')),
 ]
