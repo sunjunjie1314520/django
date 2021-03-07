@@ -166,25 +166,27 @@ REST_FRAMEWORK = {
     # 'PAGE_SIZE': 10
 }
 
-REDIS_URL = '42.194.232.90'
+REDIS_URL = '159.75.207.157'
 
 # REDIS
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://{ip}:6379".format(ip=REDIS_URL),
+        "LOCATION": f"redis://{REDIS_URL}:6379/0",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            "CONNECTION_POOL_KWARGS": {"max_connections": 100}
-            # "PASSWORD": "密码"
+            "CONNECTION_POOL_KWARGS": {
+                "max_connections": 100
+            },
+            "PASSWORD": "123456"
         }
     }
 }
 
 # django-celery 配置
-CELERY_BROKER_URL = 'redis://{ip}:6379'.format(ip=REDIS_URL)  # Broker配置，使用Redis作为消息中间件
+CELERY_BROKER_URL = f'redis://:123456@{REDIS_URL}:6379/0'  # Broker配置，使用Redis作为消息中间件
 CELERY_ACCEPT_CONTENT = ['json']
-CELERY_RESULT_BACKEND = 'redis://{ip}:6379'.format(ip=REDIS_URL)  # BACKEND配置，这里使用redis
+CELERY_RESULT_BACKEND = f'redis://:123456@{REDIS_URL}:6379/0'  # BACKEND配置，这里使用redis
 CELERY_TASK_SERIALIZER = 'json'  # 结果序列化方案
 CELERY_TIME_ZONE = 'Asia/Shanghai'
 CELERY_ENABLE_UTC = True
@@ -199,7 +201,7 @@ CORS_ALLOW_HEADERS = list(default_headers) + [
     'token',
 ]
 
-HTTP_URL = 'http://42.194.232.90:8082'
+HTTP_URL = f'http://{REDIS_URL}:8082'
 GIT_ID = 3
 
 # 【channels】（第3步）设置为指向路由对象作为根应用程序

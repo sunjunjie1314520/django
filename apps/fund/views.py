@@ -31,7 +31,8 @@ class SearchListView(APIView):
         try:
             r = requests.get(f'http://fund.eastmoney.com/pingzhongdata/{code}.js??v={get_noncestr(8)}')
             if r.status_code == 200:
-                result = strHandle(r.text)
+                section = strHandle(r.text)
+                result = section[len(section) - 30:]
                 for item in result:
                     dateArray = datetime.datetime.fromtimestamp(item['x'] / 1000)
                     timer = dateArray.strftime("%Y-%m-%d")
