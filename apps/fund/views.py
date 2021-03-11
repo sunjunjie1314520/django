@@ -33,6 +33,7 @@ class SearchListView(APIView):
             if r.status_code == 200:
                 section = strHandle(r.text)
                 result = section[len(section) - 60:]
+                result.reverse()
                 for item in result:
                     dateArray = datetime.datetime.fromtimestamp(item['x'] / 1000)
                     timer = dateArray.strftime("%Y-%m-%d")
@@ -40,7 +41,7 @@ class SearchListView(APIView):
                 # print(result)
         except BaseException as e:
             print(e)
-        return SuccessResponse(msg='基金历史净值', data=result.reverse())
+        return SuccessResponse(msg='基金历史净值', data=result)
 
 class RealtimeListView(APIView):
     """
