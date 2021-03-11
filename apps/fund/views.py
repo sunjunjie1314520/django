@@ -32,7 +32,7 @@ class SearchListView(APIView):
             r = requests.get(f'http://fund.eastmoney.com/pingzhongdata/{code}.js??v={get_noncestr(8)}')
             if r.status_code == 200:
                 section = strHandle(r.text)
-                result = section[len(section) - 30:]
+                result = section[len(section) - 60:]
                 for item in result:
                     dateArray = datetime.datetime.fromtimestamp(item['x'] / 1000)
                     timer = dateArray.strftime("%Y-%m-%d")
@@ -40,7 +40,7 @@ class SearchListView(APIView):
                 # print(result)
         except BaseException as e:
             print(e)
-        return SuccessResponse(msg='基金历史净值', data=result)
+        return SuccessResponse(msg='基金历史净值', data=result.reverse())
 
 class RealtimeListView(APIView):
     """
