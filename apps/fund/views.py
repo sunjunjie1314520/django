@@ -61,9 +61,17 @@ class RealtimeListView(APIView):
                 return ErrorResponse(msg='基金代码有误', code=404)
         except BaseException as e:
             print(e)
-            return ErrorResponse(msg='基金没有实时信息', code=500)
+            return ErrorResponse(msg=f'{code}-基金没有实时信息', code=500)
         return SuccessResponse(msg='基金实时信息', data=result)
 
+
+
+class User(serializers.ModelSerializer):
+    create_time = serializers.DateTimeField(format='%Y-%m-%d %H:%M:%S')
+
+    class Meta:
+        model = models.User
+        fields = '__all__'
 
 class GoodsListSerializer1(serializers.ModelSerializer):
     create_time = serializers.DateTimeField(format='%Y-%m-%d %H:%M:%S')
@@ -77,31 +85,60 @@ class GoodsListSerializer(serializers.ModelSerializer):
     create_time = serializers.DateTimeField(format='%Y-%m-%d %H:%M:%S')
     update_time = serializers.DateTimeField(format='%Y-%m-%d %H:%M:%S')
     code = GoodsListSerializer1()
+    checked = serializers.SerializerMethodField()
+
+    def get_checked(self, instance):
+        return False
 
     class Meta:
         model = models.Future
         fields = '__all__'
-
 
 class SortView(APIView):
     def post(self, request):
         order = request.data.get('order_by')
         code = request.data.get('code')
         # print(code, order)
-        queryset = models.Future.objects.filter(Q(code__code__contains=code) | Q(code__name__contains=code), code__status=True).order_by('-code__top', f'-{order}', '-create_time')[:100]
+        queryset = models.Future.objects.filter(Q(code__code__contains=code) | Q(code__name__contains=code), code__status=True).order_by(f'-{order}', '-create_time')[:100]
         serializer = GoodsListSerializer(instance=queryset, many=True)
         return SuccessResponse(msg='热门基金排行', data=serializer.data)
+
+
+class GoodsListSerializer2(serializers.ModelSerializer):
+    create_time = serializers.DateTimeField(format='%Y-%m-%d %H:%M:%S')
+    fund = GoodsListSerializer()
+    checked = serializers.SerializerMethodField()
+
+    def get_checked(self, instance):
+        return True
+
+    class Meta:
+        model = models.Collection
+        # fields = '__all__'
+        exclude = ['user']
+
+
+class Optional(APIView):
+    def post(self, request):
+        uid = request.data.get('uid')
+        queryset = models.Collection.objects.filter(user_id=uid)
+        serializer = GoodsListSerializer2(instance=queryset, many=True)
+        return SuccessResponse(msg='用户自选', data=serializer.data)
 
 
 class SetTopView(APIView):
     def post(self, request):
         id = request.data.get('id')
-        top = request.data.get('top')
-        queryset = models.FundAll.objects.filter(pk=id)
-        queryset.update(top=top)
-        if top:
+        checked = request.data.get('checked')
+        uid = request.data.get('uid')
+        query = models.User.objects.filter(pk=uid).exists()
+        if not query:
+            return ErrorResponse(msg='无法自选，请与管理员联系！')
+        if checked:
+            models.Collection.objects.create(fund_id=id, user_id=uid)
             msg = f'{id}-设置成功'
         else:
-            models.Future.objects.filter(code=queryset.first()).update(today=0)
+            models.Collection.objects.filter(fund_id=id).delete()
             msg = f'{id}-取消成功'
+            models.Future.objects.filter(pk=id).update(today=0)
         return SuccessResponse(msg=msg)

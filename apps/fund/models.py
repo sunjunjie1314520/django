@@ -50,3 +50,28 @@ class Future(models.Model):
 
     def __str__(self):
         return f'{self.code.code}-{self.code.name}'
+
+
+class User(models.Model):
+    user = models.CharField(max_length=10, verbose_name='姓名', null=True)
+    create_time = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
+
+    class Meta:
+        verbose_name = "基金用户"
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return f'{self.user}'
+
+
+class Collection(models.Model):
+    user = models.ForeignKey(to=User, verbose_name='用户', blank=True, on_delete=models.CASCADE)
+    fund = models.ForeignKey(to=Future, verbose_name='基金', blank=True, on_delete=models.CASCADE)
+    create_time = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
+
+    class Meta:
+        verbose_name = "基金用户"
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return f'{self.user.name}'
