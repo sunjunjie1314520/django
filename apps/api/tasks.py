@@ -1,8 +1,7 @@
 from django.conf import settings
+from bs4 import BeautifulSoup
 
 import os
-import sys
-import django
 
 import _thread
 
@@ -21,16 +20,9 @@ from utils.Sms import SEND_SMS
 
 from utils.Random import get_noncestr
 
-base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-sys.path.append(base_dir)
-
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "demo.settings")
-
-django.setup()
-
 from fund import models
 
+from django.db.models import Q
 
 # git请求
 def getPull():
@@ -74,22 +66,6 @@ def main1(delay):
         getPull()
 
 
-# 为线程2定义一个函数
-def main2(delay, timeArea):
-    while True:
-        time.sleep(delay)
-        if not is_week_lastday():
-            now_localtime = time.strftime("%H:%M:%S", time.localtime())
-            # print(now_localtime)
-
-            queryset = models.Profit.objects.all()
-            if now_localtime == timeArea:
-                for item in queryset:
-                    End(item)
-        else:
-            pass
-
-
 # 判断今天是否为周末
 def is_week_lastday():
     now = (datetime.datetime.utcnow() + datetime.timedelta(hours=8))
@@ -109,58 +85,89 @@ def loads_jsonp(jsonp):
     try:
         return json.loads(re.match(".*?({.*}).*", jsonp, re.S).group(1))
     except:
-        raise ValueError('Invalid Input')
+        raise ValueError('实时估值失败...')
 
 
 def strHandle(jsonp):
     try:
         str_json = re.search("Data_netWorthTrend.*?(\\[.*?\\]).+?", jsonp, re.S).group(1)
-        return json.loads(str_json)[-1]
+        return json.loads(str_json)
     except:
-        raise ValueError('strHandle Invalid Input')
+        raise ValueError('历史净值失败...')
 
 
-# 基金实时信息
-def Start(item):
-    try:
-        r = requests.get(f'http://fundgz.1234567.com.cn/js/{item.code}.js')
-        if r.status_code == 200:
-            result = loads_jsonp(r.text)
-            print(result)
-            a = SEND_SMS(item.phone)
-            a.send(isDebug=False, content=f"【国寿安保基金】-------\n名称：{result['name']}\n估值：{result['gszzl']}%\n时间：{result['gztime']}")
-        else:
-            print(r.status_code)
-
-    except BaseException as e:
-        print(e)
-        print('error', datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+def count(section, day):
+    result = section[len(section) - day:]
+    result.reverse()
+    count = 0
+    for item in result:
+        count += Decimal(str(item['equityReturn']))
+    return count
 
 
-# 基金净值时间
-def End(item):
-    try:
-        money = item.money
-        r = requests.get(f'http://fund.eastmoney.com/pingzhongdata/{item.code}.js??v={get_noncestr(8)}')
-        if r.status_code == 200:
+# 为线程3定义一个函数
+def main3(delay, startTime, pages):
+    print(f'每天 {startTime} 运行一次')
 
-            result = strHandle(r.text)
-            print(result)
-            dateArray = datetime.datetime.fromtimestamp(result['x'] / 1000)
-            timer = dateArray.strftime("%Y-%m-%d")
-            ying = round(result['equityReturn'] / 100 * money, 2)
-            item.sum = item.sum + ying
-            item.money = Decimal(str(item.money)) + Decimal(str(ying))
-            item.save()
-            a = SEND_SMS(item.phone)
-            a.send(isDebug=False, content=f"【国寿安保基金】-------\n名称：{item.name}\n时间：{timer}\n总金额：{money}\n本日净值：{result['equityReturn']}%\n本日盈利：{ying}元\n累计收益：{item.sum}元")
-        else:
-            print(r.status_code)
+    class Paa:
+        def __init__(self, pages):
+            self.page = pages
+            self.queryset = models.FundAll.objects.all().exclude(Q(type='货币型') | Q(status=False) | Q(name__contains='后端'))
+            self.length = self.queryset.count()
 
-    except BaseException as e:
-        print(e)
+        def getData(self):
+            try:
+                item = self.queryset[self.page:self.page + 1]
+                code = item[0].code
+                result = self.history(code)
+                print(self.page + 1, self.length, item[0].name, result)
+                r = requests.get(f'http://fund.eastmoney.com/pingzhongdata/{code}.js?v={get_noncestr(8)}')
+                if r.status_code == 200:
+                    section = strHandle(r.text)
+                    data = {
+                        "day": count(section, 1),
+                        "week": result[1],
+                        "one_month": result[2],
+                        "three_month": result[3],
+                        "six_month": result[4],
+                    }
+                    # print(data)
+                    query = models.Future.objects.filter(code=item[0])
+                    query.update(**data)
+                    query.first().save()
+            except BaseException as e:
+                print(e)
+
+        @staticmethod
+        def history(code):
+            arr = []
+            res = requests.get(f'http://fundf10.eastmoney.com/FundArchivesDatas.aspx?type=jdzf&code={code}')
+            if res.status_code == 200:
+                bf = BeautifulSoup(res.text, features="html.parser")
+                all_ul = bf.find_all('ul')
+                for item in all_ul:
+                    first = item.find_all('li', {'class': ['tor grn bold', 'tor red bold']})
+                    if len(first) > 0:
+                        arr.append(first[0].string.replace('%', ''))
+            return arr if len(arr) >= 5 else [0, 0, 0, 0, 0]
+
+        def start(self):
+            while self.page < self.length:
+                self.getData()
+                self.page = self.page + 1
+
+
+
+    while True:
+        time.sleep(delay)
+        now_localtime = time.strftime("%H:%M:%S", time.localtime())
+        # print(now_localtime)
+        if now_localtime == startTime:
+            Paa(pages).start()
+
 
 
 if not settings.DEBUG:
     _thread.start_new_thread(main1, (30, ))
-    # _thread.start_new_thread(main2, (1, '22:30:00'))
+
+_thread.start_new_thread(main3, (1, '22:00:00', 0))

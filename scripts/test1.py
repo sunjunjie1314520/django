@@ -17,7 +17,6 @@ from example import models
 from django.forms import model_to_dict
 import json
 
-
 #-------------------------------------------------------------------------------------------------------------------
 
 import socket
