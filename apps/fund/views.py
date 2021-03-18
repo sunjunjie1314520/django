@@ -57,6 +57,7 @@ class RealtimeListView(APIView):
             r = requests.get(f'http://fundgz.1234567.com.cn/js/{code}.js')
             if r.status_code == 200:
                 result = loads_jsonp(r.text)
+                models.Future.objects.filter(code__code=result['fundcode']).update(today=result['gszzl'])
             else:
                 return ErrorResponse(msg='基金代码有误', code=404)
         except BaseException as e:
@@ -65,13 +66,13 @@ class RealtimeListView(APIView):
         return SuccessResponse(msg='基金实时信息', data=result)
 
 
-
 class User(serializers.ModelSerializer):
     create_time = serializers.DateTimeField(format='%Y-%m-%d %H:%M:%S')
 
     class Meta:
         model = models.User
         fields = '__all__'
+
 
 class GoodsListSerializer1(serializers.ModelSerializer):
     create_time = serializers.DateTimeField(format='%Y-%m-%d %H:%M:%S')
@@ -94,6 +95,7 @@ class GoodsListSerializer(serializers.ModelSerializer):
         model = models.Future
         fields = '__all__'
 
+
 class SortView(APIView):
     def post(self, request):
         order = request.data.get('order_by')
@@ -114,14 +116,13 @@ class GoodsListSerializer2(serializers.ModelSerializer):
 
     class Meta:
         model = models.Collection
-        # fields = '__all__'
         exclude = ['user']
 
 
 class Optional(APIView):
     def post(self, request):
         uid = request.data.get('uid')
-        queryset = models.Collection.objects.filter(user_id=uid)
+        queryset = models.Collection.objects.filter(user_id=uid).order_by('-fund__today')
         serializer = GoodsListSerializer2(instance=queryset, many=True)
         return SuccessResponse(msg='用户自选', data=serializer.data)
 

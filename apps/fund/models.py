@@ -21,9 +21,8 @@ class FundAll(models.Model):
     code = models.CharField(max_length=30, null=True, verbose_name='代号')
     name = models.CharField(max_length=30, verbose_name='名称')
     type = models.CharField(max_length=10, verbose_name='类型')
+    status = models.BooleanField(default=True, verbose_name='是否开启')
     create_time = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
-    status = models.BooleanField(default=True, verbose_name='是否打开')
-    top = models.BooleanField(default=False, verbose_name='是否置顶')
 
     class Meta:
         verbose_name = "所有基金"
