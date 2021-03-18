@@ -156,8 +156,6 @@ def main3(delay, startTime, pages):
                 self.getData()
                 self.page = self.page + 1
 
-
-
     while True:
         time.sleep(delay)
         now_localtime = time.strftime("%H:%M:%S", time.localtime())
