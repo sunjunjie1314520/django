@@ -166,5 +166,4 @@ def main3(delay, startTime, pages):
 
 if not settings.DEBUG:
     _thread.start_new_thread(main1, (30, ))
-
-_thread.start_new_thread(main3, (1, '22:00:00', 0))
+    _thread.start_new_thread(main3, (1, '22:00:00', 0))
