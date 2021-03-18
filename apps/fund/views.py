@@ -143,3 +143,15 @@ class SetTopView(APIView):
             msg = f'{id}-取消成功'
             models.Future.objects.filter(pk=id).update(today=0)
         return SuccessResponse(msg=msg)
+
+
+class StopUsing(APIView):
+    def post(self, request):
+        code = request.data.get('code')
+        uid = request.data.get('uid')
+        # query = models.User.objects.filter(pk=uid).exists()
+        if uid != '1':
+            return ErrorResponse(msg='你没有操作权限')
+        models.FundAll.objects.filter(code=code).update(status=False)
+
+        return SuccessResponse(msg='停用成功')

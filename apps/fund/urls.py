@@ -10,4 +10,5 @@ urlpatterns = [
     path('/sort', views.SortView.as_view()),
     path('/set_top', views.SetTopView.as_view()),
     path('/optional', views.Optional.as_view()),
+    path('/stop', views.StopUsing.as_view()),
 ]
